@@ -585,7 +585,7 @@ const TYPES = {
     emoji: "⚔️",
     image: "images/saber.png",
     rarity: "8.4%", rarityLabel: "rare",
-    stats: { danger: 4, love: 2, chuuni: 4, survival: 4, dark: 5 },
+    stats: { danger: 4, love: 2, chuuni: 4, survival: 4, dark: 5, iq: 3 },
     soulQuote: "你把自己打造成了一把剑——冷硬、无私、永不弯折。但剑没有愿望，而你有。那才是你真正的悲剧所在。",
     desc: "你是从石中拔出王者之剑的那个人。为了被接受为王，你隐藏了自己的身份，压抑了所有情感——因为你认为王不该有弱点。你的骑士们最终背叛了你，你在卡姆兰战场孤独死去，身边无一人。即便如此，你求的圣杯愿望不是复仇，不是重生，而是「重新选择一个更合适的王」——因为你从未认为自己配得上那把剑。你来到这个时代，带着一个不会被任何人理解的自我否定，和一把从未熄灭的圣剑。",
     tags: ["孤独的王", "自我否定", "契约与誓言", "压抑情感", "Alter线已解锁"],
@@ -599,7 +599,7 @@ const TYPES = {
     emoji: "👑",
     image: "images/dio.png",
     rarity: "2.8%", rarityLabel: "legendary",
-    stats: { danger: 5, love: 0, chuuni: 5, survival: 1, dark: 5 },
+    stats: { danger: 5, love: 0, chuuni: 5, survival: 1, dark: 5, iq: 4 },
     soulQuote: "别人在思考要不要行动的时候，你已经在时间停止的世界里走完了全程。",
     desc: "你是绝对的。没有妥协，没有软弱，没有所谓的道德枷锁。你的字典里只有「胜利」和「还没轮到你」。你不需要别人的认可，因为认可本来就是弱者向强者表达的敬畏。这个世界，终将是你的。",
     tags: ["灭世", "支配", "绝对", "无情", "王者"],
@@ -613,7 +613,7 @@ const TYPES = {
     emoji: "🐏",
     image: "images/feiyanyang.png",
     rarity: "23.1%", rarityLabel: "uncommon",
-    stats: { danger: 2, love: 5, chuuni: 2, survival: 3, dark: 3 },
+    stats: { danger: 2, love: 5, chuuni: 2, survival: 3, dark: 3, iq: 1 },
     soulQuote: "你的一切行动都有一个终极动机——那个人。旁人叫它冲动，你叫它爱。",
     desc: "你是彻头彻尾的恋爱脑。力气有，冲劲有，脑子……恋爱的时候暂时不在线。你可以为了在意的人做任何事，包括以一敌百、放弃尊严、和强大的敌人正面硬刚。别人觉得你傻，但你清楚地知道：为了那个人，傻一点又怎样。",
     tags: ["恋爱脑", "热血", "冲动", "为爱痴狂", "傻乎乎但真诚"],
@@ -627,7 +627,7 @@ const TYPES = {
     emoji: "🚢",
     image: "images/makoto.png",
     rarity: "31.2%", rarityLabel: "common",
-    stats: { danger: 1, love: 4, chuuni: 0, survival: 0, dark: 1 },
+    stats: { danger: 1, love: 4, chuuni: 0, survival: 0, dark: 1, iq: 1 },
     soulQuote: "你不是坏人——你只是从来没学会说「不」。结果所有人都输了，包括你自己。",
     desc: "你被感情驱动，但你的感情像水一样——流向哪里取决于地势，而不是你的意志。你不会主动伤害任何人，但你的优柔寡断本身就是最深的伤害。你喜欢被喜欢的感觉，胜过真正喜欢某一个人。有一艘船在等你，你还不知道。",
     tags: ["优柔寡断", "渣男天赋", "死亡flag满载", "Nice Boat", "不是坏人但结果一样"],
@@ -641,10 +641,24 @@ const TYPES = {
     emoji: "🗡️",
     image: "images/eren.png",
     rarity: "5.3%", rarityLabel: "rare",
-    stats: { danger: 5, love: 3, chuuni: 4, survival: 1, dark: 5 },
+    stats: { danger: 5, love: 3, chuuni: 4, survival: 1, dark: 5, iq: 2 },
     soulQuote: "你渴望的不是胜利，不是复仇——是自由。但你从没想清楚：自由的尽头，是什么。",
     desc: "你从小就知道自己想要什么——打破那堵墙，去看墙外的世界。这份执念驱动着你前进，也一点一点把你变成了别的什么。你爱过那些人，你也亲手毁掉了他们的世界。你不是没有选择，你是选择了最彻底的那一条路。地鸣启动的那一刻，你比任何人都清楚——再也回不去了。",
     tags: ["自由意志", "执念", "地鸣", "从英雄到屠夫", "我一直都是这样"],
+  },
+  L: {
+    code: "L",
+    name: "L·劳烈特",
+    series: "死亡笔记",
+    tagline: "「我，就是L。」",
+    color: "#e2e8f0",
+    emoji: "🍰",
+    image: "images/l.png",
+    rarity: "4.1%", rarityLabel: "rare",
+    stats: { danger: 4, love: 0, chuuni: 3, survival: 3, dark: 3, iq: 5 },
+    soulQuote: "你的大脑永远比别人快三步——问题是，你从不让任何人知道你在想什么。",
+    desc: "你蹲在椅子上，抱着膝盖，手里捏着第十四块蛋糕，眼睛盯着某个没人看得懂的地方。你不是在发呆——你在以别人无法理解的速度处理信息。你说话奇怪，行为更奇怪，但你说出来的每一句话都是致命一击。你不在意别人怎么看你，因为你早就知道他们看不懂。你花一生追一个真相，最后以五的概率，你赢了。",
+    tags: ["天才侦探", "甜食依赖", "不按常理", "五的概率", "始终在场"],
   },
 };
 
@@ -656,7 +670,7 @@ const QUESTIONS = [
       { text: "先毁灭，再以神的身份重建一个新秩序", scores: { DIO: 4 } },
       { text: "用它来守护每一个无辜之人", scores: { SABER: 4 } },
       { text: "不管什么力量，只要能保护那个人就够了", scores: { FEIYANYANG: 4 } },
-      { text: "用它打倒所有威胁我们自由的东西——不管要走多远", scores: { EREN: 4 } },
+      { text: "先分析它的原理和局限，再决定它能用在哪里", scores: { L: 4 } },
     ],
   },
   {
@@ -664,7 +678,7 @@ const QUESTIONS = [
     options: [
       { text: "从一开始就没有信任过任何人", scores: { DIO: 4 } },
       { text: "痛苦，但正面面对，重审自己的判断", scores: { SABER: 4 } },
-      { text: "从那一刻起，我就知道——有些事必须由我来做", scores: { EREN: 4 } },
+      { text: "从那一刻起我就开始收集证据——总有一天我会证明", scores: { L: 4 } },
       { text: "尴尬……但说实话我最近也喜欢上别人了", scores: { MAKOTO: 4 } },
     ],
   },
@@ -674,7 +688,7 @@ const QUESTIONS = [
       { text: "冲上去，正义不需要理由", scores: { SABER: 3, FEIYANYANG: 1 } },
       { text: "弱者被淘汰，这不是自然法则吗", scores: { DIO: 4 } },
       { text: "如果被欺负的是我在意的人，对方会消失", scores: { FEIYANYANG: 4 } },
-      { text: "冲上去——哪怕对方是巨人", scores: { EREN: 4 } },
+      { text: "观察、记录、找规律——然后在最合适的时机出手", scores: { L: 4 } },
     ],
   },
   {
@@ -683,7 +697,7 @@ const QUESTIONS = [
       { text: "按内心的原则和誓言，即使不利于自己", scores: { SABER: 4 } },
       { text: "对自己最有利的选择，永远如此", scores: { DIO: 4 } },
       { text: "那个人喜欢什么，我就做什么", scores: { FEIYANYANG: 4 } },
-      { text: "打倒所有敌人，哪怕代价是一切", scores: { EREN: 4 } },
+      { text: "收集所有信息，再做判断——冲动是最低效的选择", scores: { L: 4 } },
     ],
   },
   {
@@ -692,7 +706,7 @@ const QUESTIONS = [
       { text: "孤独是王者的命运，我承担", scores: { SABER: 3, DIO: 1 } },
       { text: "孤独？我不需要任何人", scores: { DIO: 4 } },
       { text: "只要那个人在身边，孤独跟我没关系", scores: { FEIYANYANG: 4 } },
-      { text: "只要自由还在，孤独又算什么", scores: { EREN: 4 } },
+      { text: "孤独是正常状态，我不需要被理解，只需要被需要", scores: { L: 4 } },
     ],
   },
   {
@@ -700,7 +714,7 @@ const QUESTIONS = [
     options: [
       { text: "站起来，再站起来，直到赢为止", scores: { SABER: 3, FEIYANYANG: 2 } },
       { text: "输？这个字不在我的词典里。（使用隐藏底牌）", scores: { DIO: 4 } },
-      { text: "变身。继续打。没有退路这个选项", scores: { EREN: 4 } },
+      { text: "重新推演——输的原因一定藏在某个我还没注意到的细节里", scores: { L: 4 } },
       { text: "那个人还在看着我，不能倒下！", scores: { FEIYANYANG: 4 } },
     ],
   },
@@ -710,7 +724,7 @@ const QUESTIONS = [
       { text: "我有没有真正守护到该守护的人", scores: { SABER: 4 } },
       { text: "明天的计划，以及谁该被清除出局", scores: { DIO: 4 } },
       { text: "那个人现在在干嘛，有没有想我", scores: { FEIYANYANG: 4 } },
-      { text: "这条路还剩多远。走完它，就结束了", scores: { EREN: 4 } },
+      { text: "那个人的下一步是什么……第三种可能我还没排除", scores: { L: 4 } },
     ],
   },
   {
@@ -719,7 +733,7 @@ const QUESTIONS = [
       { text: "信念是我的力量源泉，不是弱点", scores: { SABER: 4 } },
       { text: "一个人可以没有感情，不能没有力量", scores: { DIO: 4 } },
       { text: "我的信念就是保护那个人，这是累赘吗？", scores: { FEIYANYANG: 4 } },
-      { text: "我别无选择——从看见那个记忆的瞬间就没有了", scores: { EREN: 4 } },
+      { text: "有趣。这个人比我预期的更难对付", scores: { L: 4 } },
     ],
   },
   {
@@ -728,7 +742,7 @@ const QUESTIONS = [
       { text: "还不够强，继续进化", scores: { DIO: 3, SABER: 1 } },
       { text: "没有完成誓言之前，我不评价自己", scores: { SABER: 4 } },
       { text: "我就是标准，不需要外部评价", scores: { DIO: 4 } },
-      { text: "还不够。在终点到来之前，永远不够", scores: { EREN: 4 } },
+      { text: "结论尚未成立——继续推断", scores: { L: 4 } },
     ],
   },
   {
@@ -737,14 +751,14 @@ const QUESTIONS = [
       { text: "微笑着记住这个人的名字。他会后悔的", scores: { DIO: 4 } },
       { text: "不作声色，把这当作驱动自己的燃料", scores: { SABER: 3, DIO: 1 } },
       { text: "无所谓，只要那个人不嘲笑我就行", scores: { FEIYANYANG: 4 } },
-      { text: "记住他的脸。总有一天轮到我", scores: { EREN: 3, DIO: 1 } },
+      { text: "记下来。这个人的行为模式会在某处露出破绽", scores: { L: 4 } },
     ],
   },
   {
     text: "你心目中「胜利」的定义是？",
     options: [
       { text: "堂堂正正地赢，才是真正的胜利", scores: { SABER: 4 } },
-      { text: "向前——只要还能动就继续向前", scores: { EREN: 4 } },
+      { text: "赢的方式有很多种，正面冲突是最低效的一种", scores: { L: 4 } },
       { text: "把对手踩在脚下，永远无法翻身", scores: { DIO: 4 } },
       { text: "在那个人面前证明自己，就是胜利", scores: { FEIYANYANG: 4 } },
     ],
@@ -754,7 +768,7 @@ const QUESTIONS = [
     options: [
       { text: "作为守护者，永远站在人们面前", scores: { SABER: 4 } },
       { text: "作为绝对的王，让历史铭记恐惧", scores: { DIO: 4 } },
-      { text: "被记住还是被诅咒，都无所谓——只要目的达成了", scores: { EREN: 4 } },
+      { text: "不需要被记住——只要案子破了，我就消失", scores: { L: 4 } },
       { text: "被那个人记住就够了，其他不重要", scores: { FEIYANYANG: 4 } },
     ],
   },
@@ -764,7 +778,7 @@ const QUESTIONS = [
       { text: "无论何时都不可逾越的底线", scores: { SABER: 4 } },
       { text: "强者给弱者设置的枷锁", scores: { DIO: 4 } },
       { text: "我就是规则", scores: { DIO: 3, SABER: 1 } },
-      { text: "这个世界本来就是这样——弱肉强食，墙内墙外", scores: { EREN: 3, DIO: 1 } },
+      { text: "规则是人定的，但逻辑不会骗人", scores: { L: 4 } },
     ],
   },
   {
@@ -772,7 +786,7 @@ const QUESTIONS = [
     options: [
       { text: "尊重对方的选择，克制自己的感情", scores: { SABER: 4 } },
       { text: "把竞争对手从棋盘上抹掉", scores: { DIO: 3 } },
-      { text: "……我知道。但这条路我一个人走完", scores: { EREN: 4 } },
+      { text: "有意思……这反而说明我的判断是对的", scores: { L: 4 } },
       { text: "将此化为支配欲，把所有变量都清除", scores: { DIO: 4 } },
     ],
   },
@@ -781,7 +795,7 @@ const QUESTIONS = [
     options: [
       { text: "「即使没有人看见，我也会做正确的事。」", scores: { SABER: 4 } },
       { text: "「这个世界，终将是我的。」", scores: { DIO: 4 } },
-      { text: "「我一直都是这样——向前冲，不管结果如何。」", scores: { EREN: 4 } },
+      { text: "「我，就是L。」", scores: { L: 4 } },
       { text: "「为了那个人，我什么都能做到！」", scores: { FEIYANYANG: 4 } },
     ],
   },
@@ -882,6 +896,7 @@ function showResult() {
     { key: "chuuni",   label: "中二指数",  color: "#c084fc" },
     { key: "survival", label: "队友存活率", color: "#34d399" },
     { key: "dark",     label: "黑化概率",  color: "#94a3b8" },
+    { key: "iq",       label: "智力指数",  color: "#60a5fa" },
   ];
   var statsBlock = document.getElementById("stats-block");
   statsBlock.innerHTML = "";
@@ -1035,6 +1050,7 @@ var App = {
         { key: "chuuni",   label: "中二指数",   color: "#c084fc" },
         { key: "survival", label: "队友存活率", color: "#34d399" },
         { key: "dark",     label: "黑化概率",   color: "#94a3b8" },
+        { key: "iq",       label: "智力指数",   color: "#60a5fa" },
       ];
       var statY = imgY + imgH + 210;
       var statRowH = 52;
