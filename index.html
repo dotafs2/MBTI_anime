@@ -949,15 +949,21 @@ function showResult() {
     traitsEl.appendChild(chip);
   });
 
-  // 尝试加载图片
+  // 尝试加载图片，失败则显示 CSS 占位
   var slot = document.getElementById("result-image-slot");
+  slot.innerHTML = "";
   if (t.image) {
     var img = new Image();
     img.onload = function() {
       slot.innerHTML = "";
       slot.appendChild(img);
     };
+    img.onerror = function() {
+      slot.innerHTML = '<div class="img-placeholder" style="background:linear-gradient(135deg,' + t.color + '22,' + t.color + '08)"><span style="font-size:4rem">' + t.emoji + '</span><span style="color:' + t.color + ';font-size:1.1rem;font-weight:700">' + t.name + '</span></div>';
+    };
     img.src = t.image;
+  } else {
+    slot.innerHTML = '<div class="img-placeholder" style="background:linear-gradient(135deg,' + t.color + '22,' + t.color + '08)"><span style="font-size:4rem">' + t.emoji + '</span><span style="color:' + t.color + ';font-size:1.1rem;font-weight:700">' + t.name + '</span></div>';
   }
 
   showScreen("screen-result");
@@ -982,7 +988,7 @@ var App = {
       "稀有度：" + t.rarity + "（" + t.rarityLabel.toUpperCase() + "）\n" +
       "危险指数：" + Array(t.dangerLevel + 1).join("\u2588") + Array(6 - t.dangerLevel).join("\u2591") + "\n" +
       "同类角色：" + t.animeChars + "\n\n" +
-      "你也来测测？\nhttps://dotafs2.github.io/MBTI_anime/";
+      "你也来测测？\nhttps://mbtianime.com";
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(showToast).catch(function() { alert(text); });
     } else {
