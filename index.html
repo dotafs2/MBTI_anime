@@ -992,13 +992,37 @@ function calcMaxPossible() {
   return maxP;
 }
 
+/* 计算每个角色的期望均值和标准差（基于随机选择） */
+function calcZScoreParams() {
+  var keys = Object.keys(TYPES);
+  var mean = {}, variance = {};
+  keys.forEach(function(k) { mean[k] = 0; variance[k] = 0; });
+  QUESTIONS.forEach(function(q) {
+    var n = q.options.length;
+    keys.forEach(function(k) {
+      var sum = 0, sumSq = 0;
+      q.options.forEach(function(opt) {
+        var v = opt.scores[k] || 0;
+        sum += v;
+        sumSq += v * v;
+      });
+      var mu = sum / n;
+      mean[k] += mu;
+      variance[k] += (sumSq / n) - (mu * mu);
+    });
+  });
+  var stddev = {};
+  keys.forEach(function(k) { stddev[k] = Math.sqrt(variance[k]) || 1; });
+  return { mean: mean, stddev: stddev };
+}
+
 function calcResult() {
-  var maxP = calcMaxPossible();
-  // 用归一化比率比较，确保各角色出现概率均等
+  var params = calcZScoreParams();
+  // z-score: (得分 - 期望均值) / 标准差，确保各角色出现概率均等
   return Object.entries(scores).sort(function(a, b) {
-    var ra = maxP[a[0]] > 0 ? a[1] / maxP[a[0]] : 0;
-    var rb = maxP[b[0]] > 0 ? b[1] / maxP[b[0]] : 0;
-    return rb - ra;
+    var za = (a[1] - params.mean[a[0]]) / params.stddev[a[0]];
+    var zb = (b[1] - params.mean[b[0]]) / params.stddev[b[0]];
+    return zb - za;
   })[0][0];
 }
 
