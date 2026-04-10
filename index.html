@@ -563,7 +563,6 @@ body {
   <!-- ========== TOAST ========== -->
   <div id="toast" class="toast">已复制到剪贴板！</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
 // ============================================================
 //  ANITI · 次元人格测定系统
@@ -946,76 +945,172 @@ var App = {
     btn.textContent = "生成中…";
     btn.disabled = true;
 
-    var card = document.getElementById("result-card");
     var key = calcResult();
     var t = TYPES[key];
 
-    // 先截图，再叠 QR
-    html2canvas(card, {
-      backgroundColor: "#10101e",
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-    }).then(function(canvas) {
-      var ctx = canvas.getContext("2d");
-      var qrSize = 100 * 2;
-      var pad = 20 * 2;
-      var x = canvas.width - qrSize - pad;
-      var y = canvas.height - qrSize - pad - 24;
+    var W = 750, H = 1080;
+    var canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext("2d");
 
-      // 半透明底板
-      ctx.fillStyle = "rgba(0,0,0,0.6)";
-      ctx.beginPath();
-      ctx.roundRect(x - 10, y - 10, qrSize + 20, qrSize + 34, 10);
-      ctx.fill();
+    function drawCard(charImg, qrImg) {
+      // 背景
+      var bg = ctx.createLinearGradient(0, 0, W, H);
+      bg.addColorStop(0, "#080812");
+      bg.addColorStop(1, "#10101e");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
 
-      // 用 qrserver.com API 生成 QR 图片
-      var qrImg = new Image();
-      qrImg.crossOrigin = "anonymous";
-      qrImg.onload = function() {
-        ctx.drawImage(qrImg, x, y, qrSize, qrSize);
+      // 顶部色条
+      ctx.fillStyle = t.color;
+      ctx.fillRect(0, 0, W, 6);
 
-        // 网址文字
-        ctx.fillStyle = "rgba(255,255,255,0.85)";
-        ctx.font = "bold 22px sans-serif";
+      // 左侧竖线装饰
+      ctx.fillStyle = t.color + "60";
+      ctx.fillRect(40, 40, 4, H - 80);
+
+      // 角色图片（居中上方）
+      var imgW = 340, imgH = 340;
+      var imgX = (W - imgW) / 2, imgY = 60;
+      if (charImg) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(imgX, imgY, imgW, imgH, 20);
+        ctx.clip();
+        ctx.drawImage(charImg, imgX, imgY, imgW, imgH);
+        ctx.restore();
+      } else {
+        ctx.fillStyle = t.color + "22";
+        ctx.beginPath();
+        ctx.roundRect(imgX, imgY, imgW, imgH, 20);
+        ctx.fill();
+        ctx.fillStyle = t.color;
+        ctx.font = "bold 80px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText("mbtianime.com", x + qrSize / 2, y + qrSize + 22);
+        ctx.fillText(t.emoji, W / 2, imgY + imgH / 2 + 28);
+      }
 
-        // 导出 & 分享
-        canvas.toBlob(function(blob) {
-          btn.textContent = "生成分享图片";
-          btn.disabled = false;
-          var file = new File([blob], "aniti-" + t.code + ".png", { type: "image/png" });
-          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({
-              files: [file],
-              title: "ANITI 次元人格测定",
-              text: "我是 " + t.name + "！快来测测你是哪个角色？",
-            }).catch(function() {});
-          } else {
-            var a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = "aniti-" + t.code + ".png";
-            a.click();
-          }
-        }, "image/png");
-      };
-      qrImg.onerror = function() {
-        // QR 加载失败时直接导出无 QR 版本
-        canvas.toBlob(function(blob) {
-          btn.textContent = "生成分享图片";
-          btn.disabled = false;
+      // 角色名
+      ctx.fillStyle = t.color;
+      ctx.font = "bold 72px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(t.name, W / 2, imgY + imgH + 70);
+
+      // 作品名
+      ctx.fillStyle = "rgba(255,255,255,0.45)";
+      ctx.font = "28px sans-serif";
+      ctx.fillText(t.series, W / 2, imgY + imgH + 110);
+
+      // tagline
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
+      ctx.font = "italic 26px sans-serif";
+      ctx.fillText(t.tagline, W / 2, imgY + imgH + 155);
+
+      // 分割线
+      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(60, imgY + imgH + 180);
+      ctx.lineTo(W - 60, imgY + imgH + 180);
+      ctx.stroke();
+
+      // 五维指数
+      var STATS_META = [
+        { key: "danger",   label: "危险指数",   color: "#ef4444" },
+        { key: "love",     label: "恋爱脑指数", color: "#f472b6" },
+        { key: "chuuni",   label: "中二指数",   color: "#c084fc" },
+        { key: "survival", label: "队友存活率", color: "#34d399" },
+        { key: "dark",     label: "黑化概率",   color: "#94a3b8" },
+      ];
+      var statY = imgY + imgH + 210;
+      var statRowH = 52;
+      ctx.font = "bold 24px sans-serif";
+      STATS_META.forEach(function(m, i) {
+        var y = statY + i * statRowH;
+        var val = (t.stats && t.stats[m.key]) || 0;
+        ctx.fillStyle = "rgba(255,255,255,0.5)";
+        ctx.textAlign = "left";
+        ctx.fillText(m.label, 70, y + 20);
+        for (var d = 0; d < 5; d++) {
+          ctx.fillStyle = d < val ? m.color : "rgba(255,255,255,0.1)";
+          ctx.beginPath();
+          ctx.roundRect(300 + d * 44, y, 36, 30, 5);
+          ctx.fill();
+        }
+      });
+
+      // 稀有度 badge
+      var rarityColors = { legendary: "#efbf04", rare: "#c084fc", uncommon: "#38bdf8", common: "#6b7280" };
+      var rarityNames  = { legendary: "LEGENDARY", rare: "RARE", uncommon: "UNCOMMON", common: "COMMON" };
+      var badgeY = statY + STATS_META.length * statRowH + 30;
+      ctx.fillStyle = rarityColors[t.rarityLabel] || "#6b7280";
+      ctx.beginPath();
+      ctx.roundRect(70, badgeY, 160, 36, 18);
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.font = "bold 20px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(rarityNames[t.rarityLabel] || "COMMON", 150, badgeY + 24);
+
+      ctx.fillStyle = "rgba(255,255,255,0.5)";
+      ctx.font = "22px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("仅 " + t.rarity + " 的人测到此角色", 248, badgeY + 24);
+
+      // QR code 右下角
+      var qrSize = 120, qrPad = 40;
+      var qrX = W - qrSize - qrPad, qrY = H - qrSize - qrPad - 24;
+      if (qrImg) {
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.beginPath();
+        ctx.roundRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 36, 10);
+        ctx.fill();
+        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+        ctx.fillStyle = "rgba(255,255,255,0.6)";
+        ctx.font = "18px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("mbtianime.com", qrX + qrSize / 2, qrY + qrSize + 22);
+      }
+
+      // 底部水印
+      ctx.fillStyle = "rgba(255,255,255,0.2)";
+      ctx.font = "20px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("ANITI · 次元人格测定  mbtianime.com", W / 2, H - 24);
+
+      // 导出
+      canvas.toBlob(function(blob) {
+        btn.textContent = "生成分享图片";
+        btn.disabled = false;
+        var file = new File([blob], "aniti-" + t.code + ".png", { type: "image/png" });
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: "ANITI 次元人格测定", text: "我是 " + t.name + "！" }).catch(function(){});
+        } else {
           var a = document.createElement("a");
           a.href = URL.createObjectURL(blob);
           a.download = "aniti-" + t.code + ".png";
           a.click();
-        }, "image/png");
-      };
-      qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fmbtianime.com&bgcolor=10101e&color=ffffff&format=png";
-    }).catch(function() {
-      btn.textContent = "生成分享图片";
-      btn.disabled = false;
-    });
+        }
+      }, "image/png");
+    }
+
+    // 并行加载角色图 + QR，任一失败都能降级
+    var charImg = null, qrImg = null, loaded = 0;
+    function onLoaded() {
+      loaded++;
+      if (loaded === 2) drawCard(charImg, qrImg);
+    }
+    var ci = new Image();
+    ci.crossOrigin = "anonymous";
+    ci.onload = function() { charImg = ci; onLoaded(); };
+    ci.onerror = onLoaded;
+    ci.src = t.image;
+
+    var qi = new Image();
+    qi.crossOrigin = "anonymous";
+    qi.onload = function() { qrImg = qi; onLoaded(); };
+    qi.onerror = onLoaded;
+    qi.src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https%3A%2F%2Fmbtianime.com&bgcolor=000000&color=ffffff&format=png";
   },
 };
 
