@@ -302,6 +302,88 @@ body {
 }
 .img-placeholder span { font-size: 2.8rem; }
 
+/* rarity bar */
+.result-rarity-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+  padding: 0.5em 1em;
+  background: rgba(255,255,255,0.04);
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.rarity-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.2em 0.7em;
+  border-radius: 4px;
+  color: #fff;
+}
+.rarity-text {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.rarity-text strong {
+  color: var(--text);
+  font-size: 1.1em;
+}
+
+/* soul quote */
+.soul-quote {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.7;
+  text-align: center;
+  color: var(--text);
+  padding: 1rem 1.2rem;
+  position: relative;
+  font-style: italic;
+}
+.soul-quote::before,
+.soul-quote::after {
+  font-size: 2rem;
+  line-height: 1;
+  opacity: 0.3;
+  position: absolute;
+}
+.soul-quote::before { content: "\201C"; top: 0; left: 0.3rem; }
+.soul-quote::after { content: "\201D"; bottom: 0; right: 0.3rem; }
+
+/* danger row */
+.danger-row, .anime-chars-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.danger-label, .chars-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  min-width: 70px;
+}
+.danger-dots { display: flex; gap: 4px; }
+.danger-dot {
+  width: 18px; height: 18px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.08);
+  transition: background 0.2s;
+}
+.danger-dot.active { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+.chars-val {
+  font-size: 0.88rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
 .result-desc {
   font-size: 0.97rem;
   color: var(--muted);
@@ -434,6 +516,10 @@ body {
   <div id="screen-result" class="screen">
     <div class="result-card" id="result-card">
       <div class="result-header">
+        <div class="result-rarity-bar" id="result-rarity-bar">
+          <span class="rarity-badge" id="rarity-badge"></span>
+          <span class="rarity-text">仅 <strong id="rarity-pct"></strong> 的人拥有此人格</span>
+        </div>
         <div class="result-code" id="result-code"></div>
         <div class="result-name" id="result-name"></div>
         <div class="result-tagline" id="result-tagline"></div>
@@ -444,8 +530,23 @@ body {
           <small>图片施工中</small>
         </div>
       </div>
+      <!-- 灵魂拷问 -->
+      <div class="soul-quote" id="soul-quote"></div>
+      <!-- 描述 -->
       <div class="result-desc" id="result-desc"></div>
+      <!-- 危险等级 -->
+      <div class="danger-row">
+        <span class="danger-label">危险指数</span>
+        <span class="danger-dots" id="danger-dots"></span>
+      </div>
+      <!-- 代表角色 -->
+      <div class="anime-chars-row">
+        <span class="chars-label">同类角色</span>
+        <span class="chars-val" id="anime-chars"></span>
+      </div>
+      <!-- 特征标签 -->
       <div class="result-traits" id="result-traits"></div>
+      <!-- 契合/相克 -->
       <div class="result-compat">
         <div class="compat-item">
           <span class="compat-label">契合</span>
@@ -485,19 +586,27 @@ const TYPES = {
     tagline: "「才、才不是为了你！」",
     color: "#f472b6",
     emoji: "🌸",
-    image: "images/tsun.png",   // TODO: 换成真实图片
-    desc: "TODO：填写傲娇型人格描述。嘴硬心软、死不认错、关键时刻挺身而出……",
-    traits: ["嘴硬心软", "死不认错", "耳朵会变红", "其实很在意你"],
-    compatible: "HERO", incompatible: "DEMON",
+    image: "images/tsun.png",
+    rarity: "18.7%", rarityLabel: "uncommon",
+    animeChars: "远坂凛 / 御坂美琴 / 惣流明日香",
+    dangerLevel: 3,
+    soulQuote: "你嘴上说的每一句「不在乎」，身体都在说谎。全世界都看穿了你，除了你自己。",
+    desc: "你是矛盾的集合体——表面冷漠到让人以为你毫不在意，但每一个转身背后都藏着一整个宇宙的情感。你宁愿被误解一万次，也不肯主动说出那句话。但在真正重要的时刻，你永远是第一个冲上来的人。这份别扭的温柔，才是你最致命的武器。",
+    traits: ["嘴硬心软", "死不认错", "耳朵会变红", "别扭到极致", "其实很在意你"],
+    compatible: "HERO", incompatible: "DIO",
   },
   YAND: {
     code: "YAND", name: "病娇型",
     tagline: "「我会永远守护你的……」",
     color: "#c084fc",
     emoji: "🔪",
-    image: "images/yand.png",   // TODO
-    desc: "TODO：填写病娇型人格描述。执着、深情、偏执，爱起来没有边界……",
-    traits: ["极度执着", "占有欲强", "表面温柔", "笑容背后有刀"],
+    image: "images/yand.png",
+    rarity: "6.2%", rarityLabel: "rare",
+    animeChars: "我妻由乃 / 桂言叶 / 前原圭一",
+    dangerLevel: 5,
+    soulQuote: "你的爱不是火焰，是黑洞——一旦靠近就无法逃脱，连光都不行。",
+    desc: "你拥有这个世界上最纯粹也最危险的感情。当你爱一个人的时候，那不是喜欢，那是整个存在意义的重新定义。你愿意为那个人做任何事——任何事。别人叫它偏执，你叫它深情。你的世界只需要一个人，但那个人，必须只有你。",
+    traits: ["极度执着", "占有欲MAX", "表面温柔", "笑容背后有刀", "爱到窒息"],
     compatible: "TSUN", incompatible: "HERO",
   },
   HERO: {
@@ -505,18 +614,26 @@ const TYPES = {
     tagline: "「我绝对不会放弃！」",
     color: "#f97316",
     emoji: "⚔️",
-    image: "images/hero.png",   // TODO
-    desc: "TODO：填写热血勇者型人格描述。冲劲十足、永不放弃、脑子不够肌肉来凑……",
-    traits: ["永不言弃", "天生领袖", "冲动行事", "感染力超强"],
-    compatible: "SAGE", incompatible: "DEMON",
+    image: "images/hero.png",
+    rarity: "21.3%", rarityLabel: "common",
+    animeChars: "路飞 / �的接班人 / �的接班人 / 炭治郎",
+    dangerLevel: 2,
+    soulQuote: "你的字典里没有「放弃」两个字——因为你根本不会翻字典，直接冲就完事了。",
+    desc: "你是少年漫画的活体化身。不管面前是什么级别的敌人，你的第一反应永远是「冲」。你的脑回路简单到让天才崩溃，但你的信念坚定到让神都要让路。你会输，会倒下，会流血——但你永远会站起来。这份不讲道理的热血，是这个世界上最稀缺的东西。",
+    traits: ["永不言弃", "天生领袖", "冲动行事", "感染力超强", "越挫越勇"],
+    compatible: "SAGE", incompatible: "DIO",
   },
   DIO: {
     code: "DIO", name: "DIO型",
     tagline: "「このDIOだ！」",
     color: "#efbf04",
     emoji: "🧛",
-    image: "images/dio.png",   // TODO: DIO character illustration
-    desc: "你站在世界的顶端俯视众生。对你而言，他人不过是棋子，规则不过是建议。你拥有绝对的自信和支配欲，不屑于解释自己的行为——因为你就是标准。当别人还在犹豫的时候，你已经在时间停止的世界里走完了全程。",
+    image: "images/dio.png",
+    rarity: "2.8%", rarityLabel: "legendary",
+    animeChars: "DIO / 弗利萨 / 艾泽恩 / 蓝染惣右介",
+    dangerLevel: 5,
+    soulQuote: "别人在思考要不要行动的时候，你已经在时间停止的世界里走完了全程。",
+    desc: "你站在世界的顶端俯视众生。对你而言，他人不过是棋子，规则不过是建议。你拥有绝对的自信和支配欲，不屑于解释自己的行为——因为你就是标准。当别人还在犹豫的时候，你已经在时间停止的世界里走完了全程。你不是反派，你只是比所有人都早看到了终局。",
     traits: ["绝对支配", "蔑视规则", "时停级城府", "WRYYYYY", "不屑解释"],
     compatible: "SAGE", incompatible: "HERO",
   },
@@ -525,9 +642,13 @@ const TYPES = {
     tagline: "「二次元才是永远的家。」",
     color: "#38bdf8",
     emoji: "🎮",
-    image: "images/otaku.png",  // TODO
-    desc: "TODO：填写次元宅型人格描述。活在二次元、对现实世界冷感、但在自己领域是神……",
-    traits: ["番剧百科全书", "社交能量为零", "独处超舒适", "waifu才是真爱"],
+    image: "images/otaku.png",
+    rarity: "34.6%", rarityLabel: "common",
+    animeChars: "桐谷和人 / 康纳 / 坂本 / �的接班人 / 江户川柯南",
+    dangerLevel: 1,
+    soulQuote: "三次元的人永远不会懂——你不是逃避现实，你是选择了一个更好的世界。",
+    desc: "你早就看清了：三次元是限量版地狱，二次元才是永恒的乐园。你在现实里沉默寡言，但在自己的领域里你是绝对的王者。你能背出每一部番的OP歌词，记得每一个角色的生日，你的文化造诣深到让教授自愧不如——虽然方向可能有点偏。但这就是你的世界，谁都夺不走。",
+    traits: ["番剧百科全书", "社交能量为零", "独处超舒适", "waifu才是真爱", "精神世界无限大"],
     compatible: "YAND", incompatible: "HERO",
   },
   SAGE: {
@@ -535,10 +656,14 @@ const TYPES = {
     tagline: "「一切皆有因果。」",
     color: "#34d399",
     emoji: "📚",
-    image: "images/sage.png",   // TODO
-    desc: "TODO：填写贤者型人格描述。冷静睿智、看透一切但懒得说、是队伍真正的大脑……",
-    traits: ["逻辑清晰", "话不多但必中", "淡然处世", "其实啥都知道"],
-    compatible: "DEMON", incompatible: "OTAKU",
+    image: "images/sage.png",
+    rarity: "9.4%", rarityLabel: "rare",
+    animeChars: "L / 杀生丸 / 长门 / 浦原喜助",
+    dangerLevel: 4,
+    soulQuote: "你什么都知道，但你选择沉默——因为解释的成本远高于让他们自己犯错。",
+    desc: "你是那个在所有人慌乱时还能泡茶的人。不是因为你不在乎，而是因为你早在三步之前就看到了结局。你的话不多，但每一句都是致命一击。别人以为你冷漠，其实你只是懒得演戏。你是队伍真正的大脑，是暗处的操盘手，是笑到最后的人。",
+    traits: ["逻辑清晰", "话不多但必中", "淡然处世", "其实啥都知道", "笑到最后"],
+    compatible: "DIO", incompatible: "OTAKU",
   },
 };
 
@@ -768,23 +893,54 @@ function showResult() {
   const key = calcResult();
   const t = TYPES[key];
 
+  // 稀有度
+  var rarityColors = { legendary: "#efbf04", rare: "#c084fc", uncommon: "#38bdf8", common: "#6b7280" };
+  var rarityNames = { legendary: "LEGENDARY", rare: "RARE", uncommon: "UNCOMMON", common: "COMMON" };
+  var badge = document.getElementById("rarity-badge");
+  badge.textContent = rarityNames[t.rarityLabel] || "COMMON";
+  badge.style.background = rarityColors[t.rarityLabel] || "#6b7280";
+  document.getElementById("rarity-pct").textContent = t.rarity;
+
+  // 基本信息
   document.getElementById("result-code").textContent = t.code;
   document.getElementById("result-code").style.color = t.color;
   document.getElementById("result-name").textContent = t.name;
   document.getElementById("result-tagline").textContent = t.tagline;
+
+  // 灵魂拷问
+  document.getElementById("soul-quote").textContent = t.soulQuote;
+
+  // 描述
   document.getElementById("result-desc").textContent = t.desc;
   document.getElementById("result-desc").style.borderLeftColor = t.color;
+
+  // 危险等级
+  var dotsEl = document.getElementById("danger-dots");
+  dotsEl.innerHTML = "";
+  for (var i = 0; i < 5; i++) {
+    var dot = document.createElement("span");
+    dot.className = "danger-dot" + (i < t.dangerLevel ? " active" : "");
+    dotsEl.appendChild(dot);
+  }
+
+  // 代表角色
+  document.getElementById("anime-chars").textContent = t.animeChars;
+
+  // emoji
   document.getElementById("result-emoji").textContent = t.emoji;
+
+  // 契合/相克
   document.getElementById("compat-good").textContent = t.compatible;
   document.getElementById("compat-bad").textContent = t.incompatible;
 
-  const card = document.getElementById("result-card");
+  var card = document.getElementById("result-card");
   card.style.borderColor = t.color + "40";
 
-  const traitsEl = document.getElementById("result-traits");
+  // 特征标签
+  var traitsEl = document.getElementById("result-traits");
   traitsEl.innerHTML = "";
   t.traits.forEach(function(tr) {
-    const chip = document.createElement("span");
+    var chip = document.createElement("span");
     chip.className = "trait-chip";
     chip.textContent = tr;
     chip.style.color = t.color;
@@ -794,9 +950,9 @@ function showResult() {
   });
 
   // 尝试加载图片
-  const slot = document.getElementById("result-image-slot");
+  var slot = document.getElementById("result-image-slot");
   if (t.image) {
-    const img = new Image();
+    var img = new Image();
     img.onload = function() {
       slot.innerHTML = "";
       slot.appendChild(img);
@@ -817,9 +973,16 @@ var App = {
   },
   retry: function() { App.start(); },
   share: function() {
-    const key = calcResult();
-    const t = TYPES[key];
-    const text = "【次元人格测定 · ANITI】\n我的人格类型是：" + t.code + " " + t.name + "\n" + t.tagline + "\n\n快来测测你是哪种次元属性！";
+    var key = calcResult();
+    var t = TYPES[key];
+    var text = "【次元人格测定 ANITI】\n\n" +
+      "我的人格类型：" + t.code + " " + t.name + "\n" +
+      t.tagline + "\n\n" +
+      "// " + t.soulQuote + "\n\n" +
+      "稀有度：" + t.rarity + "（" + t.rarityLabel.toUpperCase() + "）\n" +
+      "危险指数：" + Array(t.dangerLevel + 1).join("\u2588") + Array(6 - t.dangerLevel).join("\u2591") + "\n" +
+      "同类角色：" + t.animeChars + "\n\n" +
+      "你也来测测？\nhttps://dotafs2.github.io/MBTI_anime/";
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(showToast).catch(function() { alert(text); });
     } else {
