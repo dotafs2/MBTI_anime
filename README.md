@@ -2,100 +2,76 @@
 
 **Anime Nature Identity Type Indicator**
 
-> 15 questions. 6 personality types. Find out which anime archetype you truly are.
+> 15 questions. 6 anime archetypes. No MBTI nonsense.
 
-[**→ Try it now**](https://dotafs2.github.io/MBTI_anime/)
-
----
-
-## What is this?
-
-ANITI is a mobile-first anime personality test inspired by the viral [SBTI](https://sbti.unun.dev/) format. Answer 15 scenario-based questions and discover your inner anime archetype — whether you're a tsundere, a yandere, a hot-blooded hero, or something else entirely.
-
-Pure HTML / CSS / JS. No backend. No frameworks. Works on any device.
+[**→ 立即测试 / Try it now**](https://mbtianime.com/)
 
 ---
 
-## Personality Types
+## 灵感来源 / Inspired By
 
-| Code | Name | Tagline |
-|------|------|---------|
-| `TSUN` | 傲娇型 Tsundere | "It's not like I did it for you!" |
-| `YAND` | 病娇型 Yandere | "I will protect you... forever." |
-| `HERO` | 热血勇者型 Hot-blood Hero | "I will never give up!" |
-| `DEMON` | 魔王系 Demon Lord | "Kneel." |
-| `OTAKU` | 次元宅型 Otaku | "2D is my eternal home." |
-| `SAGE` | 贤者型 Sage | "All things have their cause." |
+本项目灵感来自 B 站 UP 主 **[@蛆肉儿串儿](https://space.bilibili.com/417038183)** 制作的 **[SBTI](https://sbti.unun.dev/)**——
+
+> **「MBTI 已经过时，SBTI 来了。」**
+
+SBTI 是蛆肉儿串儿原创的人格测试格式，托管于 Cloudflare，域名自费。ANITI 在此基础上进行了二次创作，以动漫世界观为核心重新设计了人格类型与题目体系。
 
 ---
 
 ## 这是什么？
 
-ANITI 是一个以手机端为主的动漫人格测试，灵感来自病毒式传播的 [SBTI](https://sbti.unun.dev/) 格式。回答 15 道情景题，测出你的二次元人格原型——傲娇、病娇、热血勇者、魔王，还是别的什么。
+ANITI 是一个以手机端为主的动漫人格测试。回答 15 道情景题，测出你的二次元人格原型——傲娇、病娇、热血勇者、DIO，还是别的什么。
 
 纯 HTML / CSS / JS，无后端，无框架，任何设备均可运行。
 
 ---
 
-## 人格类型
+## What is this?
 
-| 代码 | 名称 | 标语 |
-|------|------|------|
-| `TSUN` | 傲娇型 | 「才、才不是为了你！」 |
-| `YAND` | 病娇型 | 「我会永远守护你的……」 |
-| `HERO` | 热血勇者型 | 「我绝对不会放弃！」 |
-| `DEMON` | 魔王系 | 「跪下。」 |
-| `OTAKU` | 次元宅型 | 「二次元才是永远的家。」 |
-| `SAGE` | 贤者型 | 「一切皆有因果。」 |
+ANITI is a mobile-first anime personality quiz. Answer 15 scenario-based questions and discover your inner anime archetype — tsundere, yandere, hot-blooded hero, DIO, or something else entirely.
+
+Pure HTML / CSS / JS. No backend. No frameworks. Works on any device.
 
 ---
 
-## Platform Support
+## 人格类型 / Personality Types
 
-| Platform | Status |
-|----------|--------|
-| iOS (Safari) | ✅ Primary target |
-| Android (Chrome) | ✅ Primary target |
-| Windows (Chrome / Edge) | ✅ Supported |
-| Desktop Safari / Firefox | ✅ Supported |
+| 代码 | 中文名 | EN | 标语 |
+|------|--------|-----|------|
+| `TSUN` | 傲娇型 | Tsundere | 「才、才不是为了你！」 |
+| `YAND` | 病娇型 | Yandere | 「我会永远守护你的……」 |
+| `HERO` | 热血勇者型 | Hot-blood Hero | 「我绝对不会放弃！」 |
+| `DIO` | DIO 型 | The Absolute | 「このDIOだ！」 |
+| `OTAKU` | 次元宅型 | Otaku | 「二次元才是永远的家。」 |
+| `SAGE` | 贤者型 | Sage | 「一切皆有因果。」 |
 
 ---
 
-## Project Structure
+## 项目结构 / Project Structure
 
 ```
 MBTI_anime/
-├── index.html        # Everything — HTML, CSS, and JS are all inline
-├── images/           # Personality type images (to be added)
-│   └── .gitkeep
+├── index.html   # 全部代码内联（HTML + CSS + JS）
+├── images/      # 各人格类型配图
+│   └── dio.png
+├── CNAME        # 自定义域名 mbtianime.com
 └── README.md
 ```
 
 ---
 
-## Customization TODO
+## 部署 / Deploy
 
-All content is in `index.html`. Search for `TODO` to find everything that needs filling in:
+静态站点，无需构建。
 
-- [ ] `TYPES[x].desc` — Write personality descriptions
-- [ ] `TYPES[x].traits` — Refine trait tags  
-- [ ] `images/` — Add one illustration per personality type
-- [ ] Add more questions to `QUESTIONS` array
-- [ ] Tune scoring weights in `options[x].scores`
-
----
-
-## Deploy
-
-This is a static site. No build step required.
-
-**GitHub Pages (recommended)**
-1. Push to GitHub
+**GitHub Pages**
+1. Push 到 GitHub
 2. Settings → Pages → Deploy from `main` branch `/root`
-3. Done: `https://<username>.github.io/<repo>/`
+3. 访问 `https://<username>.github.io/<repo>/`
 
 ---
 
-## License
+## Credits & License
 
-For personal / non-commercial use. Content inspired by [SBTI](https://sbti.unun.dev/) (original by [@蛆肉儿串儿](https://space.bilibili.com/) on Bilibili).
+- **SBTI 原作者**：[B站@蛆肉儿串儿](https://space.bilibili.com/417038183) · [sbti.unun.dev](https://sbti.unun.dev/)
+- **ANITI** 为基于 SBTI 概念的动漫向二次创作，仅供个人非商业使用。
