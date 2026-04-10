@@ -553,7 +553,7 @@ body {
         </div>
       </div>
       <div class="result-actions">
-        <button class="btn-primary" onclick="App.share()">复制结果分享</button>
+        <button class="btn-primary" onclick="App.share()" id="share-btn">生成分享图片</button>
         <button class="btn-secondary" onclick="App.retry()">再测一次</button>
       </div>
       <p class="result-disclaimer">本测试仅供娱乐 &middot; 不作为任何诊断依据</p>
@@ -563,6 +563,8 @@ body {
   <!-- ========== TOAST ========== -->
   <div id="toast" class="toast">已复制到剪贴板！</div>
 
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <script>
 // ============================================================
 //  ANITI · 次元人格测定系统
@@ -927,20 +929,76 @@ var App = {
     App.start();
   },
   share: function() {
+    var btn = document.getElementById("share-btn");
+    btn.textContent = "生成中…";
+    btn.disabled = true;
+
+    var card = document.getElementById("result-card");
     var key = calcResult();
     var t = TYPES[key];
-    var text = "【次元人格测定 ANITI】\n\n" +
-      "我是：" + t.name + "（" + t.series + "）\n" +
-      t.tagline + "\n\n" +
-      "// " + t.soulQuote + "\n\n" +
-      "稀有度：" + t.rarity + "（" + t.rarityLabel.toUpperCase() + "）\n" +
-      "危险指数：" + Array(t.stats.danger + 1).join("█") + Array(6 - t.stats.danger).join("░") + "\n\n" +
-      "你是哪个角色？\nhttps://mbtianime.com";
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(showToast).catch(function() { alert(text); });
-    } else {
-      alert(text);
-    }
+
+    // 先生成 QR code dataURL，再截图
+    QRCode.toDataURL("https://mbtianime.com", {
+      width: 120, margin: 1,
+      color: { dark: "#ffffff", light: "#00000000" }
+    }, function(err, qrDataUrl) {
+      html2canvas(card, {
+        backgroundColor: "#10101e",
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+      }).then(function(canvas) {
+        // 合成：在截图右下角叠加 QR + 网址
+        var ctx = canvas.getContext("2d");
+        var qrSize = 100;
+        var pad = 16;
+        var x = canvas.width - qrSize - pad;
+        var y = canvas.height - qrSize - pad;
+
+        // 半透明底板
+        ctx.fillStyle = "rgba(0,0,0,0.55)";
+        ctx.beginPath();
+        ctx.roundRect(x - 8, y - 8, qrSize + 16, qrSize + 28, 8);
+        ctx.fill();
+
+        // QR 图
+        var qrImg = new Image();
+        qrImg.onload = function() {
+          ctx.drawImage(qrImg, x, y, qrSize, qrSize);
+
+          // 网址文字
+          ctx.fillStyle = "rgba(255,255,255,0.7)";
+          ctx.font = "bold " + (14 * 2) + "px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("mbtianime.com", x + qrSize / 2, y + qrSize + 18);
+
+          // 导出 & 分享
+          canvas.toBlob(function(blob) {
+            btn.textContent = "生成分享图片";
+            btn.disabled = false;
+            var file = new File([blob], "aniti-" + t.code + ".png", { type: "image/png" });
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+              navigator.share({
+                files: [file],
+                title: "ANITI 次元人格测定",
+                text: "我是 " + t.name + "！快来测测你是哪个角色？",
+              }).catch(function() {});
+            } else {
+              // 桌面：直接下载
+              var a = document.createElement("a");
+              a.href = URL.createObjectURL(blob);
+              a.download = "aniti-" + t.code + ".png";
+              a.click();
+            }
+          }, "image/png");
+        };
+        qrImg.src = qrDataUrl;
+      }).catch(function() {
+        btn.textContent = "生成分享图片";
+        btn.disabled = false;
+        showToast();
+      });
+    });
   },
 };
 
