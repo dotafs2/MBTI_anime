@@ -487,10 +487,10 @@ body {
     </div>
     <div class="landing-content">
       <div class="badge">ANITI &middot; 次元人格测定系统 v1.0</div>
-      <h1 class="main-title">你是哪种<br/><span class="title-highlight">次元人格</span>？</h1>
+      <h1 class="main-title">你是哪个<br/><span class="title-highlight">动漫角色</span>？</h1>
       <p class="main-desc">
-        15 道题，测出你的真实二次元属性。<br/>
-        你究竟是傲娇、魔王、勇者、还是彻底的宅？
+        15 道题，测出你骨子里最像哪个角色。<br/>
+        不是类型，不是标签——就是那个人。
       </p>
       <button class="btn-primary" onclick="App.start()">开始测定</button>
       <p class="disclaimer">本测试仅供娱乐 &middot; 请勿对号入座 &middot; 如有雷同请检举你的朋友</p>
@@ -539,22 +539,13 @@ body {
         <span class="danger-label">危险指数</span>
         <span class="danger-dots" id="danger-dots"></span>
       </div>
-      <!-- 代表角色 -->
-      <div class="anime-chars-row">
-        <span class="chars-label">同类角色</span>
-        <span class="chars-val" id="anime-chars"></span>
-      </div>
       <!-- 特征标签 -->
       <div class="result-traits" id="result-traits"></div>
-      <!-- 契合/相克 -->
+      <!-- 出自作品 -->
       <div class="result-compat">
-        <div class="compat-item">
-          <span class="compat-label">契合</span>
-          <span class="compat-val" id="compat-good"></span>
-        </div>
-        <div class="compat-item">
-          <span class="compat-label">相克</span>
-          <span class="compat-val" id="compat-bad"></span>
+        <div class="compat-item" style="flex:1">
+          <span class="compat-label">出自作品</span>
+          <span class="compat-val" id="result-series"></span>
         </div>
       </div>
       <div class="result-actions">
@@ -579,284 +570,227 @@ body {
 //    4. 可继续增加 QUESTIONS 题目或调整 scores 权重
 // ============================================================
 
-/* ── 人格类型定义 ── */
+/* ── 角色类型定义 ── */
 const TYPES = {
-  TSUN: {
-    code: "TSUN", name: "傲娇型",
-    tagline: "「才、才不是为了你！」",
-    color: "#f472b6",
-    emoji: "🌸",
-    image: "images/tsun.png",
-    rarity: "18.7%", rarityLabel: "uncommon",
-    animeChars: "远坂凛 / 御坂美琴 / 惣流明日香",
-    dangerLevel: 3,
-    soulQuote: "你嘴上说的每一句「不在乎」，身体都在说谎。全世界都看穿了你，除了你自己。",
-    desc: "你是矛盾的集合体——表面冷漠到让人以为你毫不在意，但每一个转身背后都藏着一整个宇宙的情感。你宁愿被误解一万次，也不肯主动说出那句话。但在真正重要的时刻，你永远是第一个冲上来的人。这份别扭的温柔，才是你最致命的武器。",
-    traits: ["嘴硬心软", "死不认错", "耳朵会变红", "别扭到极致", "其实很在意你"],
-    compatible: "HERO", incompatible: "DIO",
-  },
-  YAND: {
-    code: "YAND", name: "病娇型",
-    tagline: "「我会永远守护你的……」",
-    color: "#c084fc",
-    emoji: "🔪",
-    image: "images/yand.png",
-    rarity: "6.2%", rarityLabel: "rare",
-    animeChars: "我妻由乃 / 桂言叶 / 前原圭一",
-    dangerLevel: 5,
-    soulQuote: "你的爱不是火焰，是黑洞——一旦靠近就无法逃脱，连光都不行。",
-    desc: "你拥有这个世界上最纯粹也最危险的感情。当你爱一个人的时候，那不是喜欢，那是整个存在意义的重新定义。你愿意为那个人做任何事——任何事。别人叫它偏执，你叫它深情。你的世界只需要一个人，但那个人，必须只有你。",
-    traits: ["极度执着", "占有欲MAX", "表面温柔", "笑容背后有刀", "爱到窒息"],
-    compatible: "TSUN", incompatible: "HERO",
-  },
-  HERO: {
-    code: "HERO", name: "热血勇者型",
-    tagline: "「我绝对不会放弃！」",
-    color: "#f97316",
+  SABER: {
+    code: "SABER",
+    name: "Saber",
+    series: "Fate/stay night",
+    tagline: "「即使道路艰辛，誓言将永不改变。」",
+    color: "#3b82f6",
     emoji: "⚔️",
-    image: "images/hero.png",
-    rarity: "21.3%", rarityLabel: "common",
-    animeChars: "路飞 / �的接班人 / �的接班人 / 炭治郎",
-    dangerLevel: 2,
-    soulQuote: "你的字典里没有「放弃」两个字——因为你根本不会翻字典，直接冲就完事了。",
-    desc: "你是少年漫画的活体化身。不管面前是什么级别的敌人，你的第一反应永远是「冲」。你的脑回路简单到让天才崩溃，但你的信念坚定到让神都要让路。你会输，会倒下，会流血——但你永远会站起来。这份不讲道理的热血，是这个世界上最稀缺的东西。",
-    traits: ["永不言弃", "天生领袖", "冲动行事", "感染力超强", "越挫越勇"],
-    compatible: "SAGE", incompatible: "DIO",
+    image: "images/saber.png",
+    rarity: "8.4%", rarityLabel: "rare",
+    dangerLevel: 3,
+    soulQuote: "你从不为自己而活——但这并不是软弱，而是一种比任何利刃都锋利的意志。",
+    desc: "你骨子里是一个骑士。你相信规则、荣耀和牺牲，即使整个世界背叛了你，你也会独自站在那里，把剑指向该指的方向。情感对你来说是奢侈品，但你藏得很深——那份克制的温柔，比任何呐喊都更有分量。",
+    tags: ["正义", "守护", "骑士道", "克制", "誓言"],
   },
   DIO: {
-    code: "DIO", name: "DIO型",
+    code: "DIO",
+    name: "DIO",
+    series: "JoJo's Bizarre Adventure",
     tagline: "「このDIOだ！」",
-    color: "#efbf04",
-    emoji: "🧛",
+    color: "#f59e0b",
+    emoji: "👑",
     image: "images/dio.png",
     rarity: "2.8%", rarityLabel: "legendary",
-    animeChars: "DIO / 弗利萨 / 艾泽恩 / 蓝染惣右介",
     dangerLevel: 5,
     soulQuote: "别人在思考要不要行动的时候，你已经在时间停止的世界里走完了全程。",
-    desc: "你站在世界的顶端俯视众生。对你而言，他人不过是棋子，规则不过是建议。你拥有绝对的自信和支配欲，不屑于解释自己的行为——因为你就是标准。当别人还在犹豫的时候，你已经在时间停止的世界里走完了全程。你不是反派，你只是比所有人都早看到了终局。",
-    traits: ["绝对支配", "蔑视规则", "时停级城府", "WRYYYYY", "不屑解释"],
-    compatible: "SAGE", incompatible: "HERO",
+    desc: "你是绝对的。没有妥协，没有软弱，没有所谓的道德枷锁。你的字典里只有「胜利」和「还没轮到你」。你不需要别人的认可，因为认可本来就是弱者向强者表达的敬畏。这个世界，终将是你的。",
+    tags: ["灭世", "支配", "绝对", "无情", "王者"],
   },
-  OTAKU: {
-    code: "OTAKU", name: "次元宅型",
-    tagline: "「二次元才是永远的家。」",
-    color: "#38bdf8",
-    emoji: "🎮",
-    image: "images/otaku.png",
-    rarity: "34.6%", rarityLabel: "common",
-    animeChars: "桐谷和人 / 康纳 / 坂本 / �的接班人 / 江户川柯南",
-    dangerLevel: 1,
-    soulQuote: "三次元的人永远不会懂——你不是逃避现实，你是选择了一个更好的世界。",
-    desc: "你早就看清了：三次元是限量版地狱，二次元才是永恒的乐园。你在现实里沉默寡言，但在自己的领域里你是绝对的王者。你能背出每一部番的OP歌词，记得每一个角色的生日，你的文化造诣深到让教授自愧不如——虽然方向可能有点偏。但这就是你的世界，谁都夺不走。",
-    traits: ["番剧百科全书", "社交能量为零", "独处超舒适", "waifu才是真爱", "精神世界无限大"],
-    compatible: "YAND", incompatible: "HERO",
-  },
-  SAGE: {
-    code: "SAGE", name: "贤者型",
-    tagline: "「一切皆有因果。」",
-    color: "#34d399",
-    emoji: "📚",
-    image: "images/sage.png",
-    rarity: "9.4%", rarityLabel: "rare",
-    animeChars: "L / 杀生丸 / 长门 / 浦原喜助",
-    dangerLevel: 4,
-    soulQuote: "你什么都知道，但你选择沉默——因为解释的成本远高于让他们自己犯错。",
-    desc: "你是那个在所有人慌乱时还能泡茶的人。不是因为你不在乎，而是因为你早在三步之前就看到了结局。你的话不多，但每一句都是致命一击。别人以为你冷漠，其实你只是懒得演戏。你是队伍真正的大脑，是暗处的操盘手，是笑到最后的人。",
-    traits: ["逻辑清晰", "话不多但必中", "淡然处世", "其实啥都知道", "笑到最后"],
-    compatible: "DIO", incompatible: "OTAKU",
+  FEIYANYANG: {
+    code: "FEIYANYANG",
+    name: "沸羊羊",
+    series: "喜羊羊与灰太狼",
+    tagline: "「为了美羊羊，我可以做任何事！」",
+    color: "#f97316",
+    emoji: "🐏",
+    image: "images/feiyanyang.png",
+    rarity: "23.1%", rarityLabel: "uncommon",
+    dangerLevel: 2,
+    soulQuote: "你的一切行动都有一个终极动机——那个人。旁人叫它冲动，你叫它爱。",
+    desc: "你是彻头彻尾的恋爱脑。力气有，冲劲有，脑子……恋爱的时候暂时不在线。你可以为了在意的人做任何事，包括以一敌百、放弃尊严、和强大的敌人正面硬刚。别人觉得你傻，但你清楚地知道：为了那个人，傻一点又怎样。",
+    tags: ["恋爱脑", "热血", "冲动", "为爱痴狂", "傻乎乎但真诚"],
   },
 };
 
 /* ── 题目列表 ── */
 const QUESTIONS = [
-  // ── Q1: 世界观 ──
   {
     text: "如果你获得了毁灭世界的力量，你会？",
     options: [
-      { text: "毁灭？太麻烦了，我继续看番", scores: { OTAKU: 4 } },
-      { text: "当然是拯救世界，这不是主角该做的吗", scores: { HERO: 4 } },
-      { text: "先毁灭，再以神的身份重建", scores: { DIO: 4 } },
-      { text: "研究一下这个力量的原理再说", scores: { SAGE: 3, DIO: 1 } },
+      { text: "先毁灭，再以神的身份重建一个新秩序", scores: { DIO: 4 } },
+      { text: "用它来守护每一个无辜之人", scores: { SABER: 4 } },
+      { text: "不管什么力量，只要能保护那个人就够了", scores: { FEIYANYANG: 4 } },
+      { text: "研究一下原理——没有任何人值得拥有这种力量", scores: { SABER: 2, DIO: 1 } },
     ],
   },
-  // ── Q2: 背叛 ──
   {
     text: "你最信任的人背叛了你，你会？",
     options: [
-      { text: "表面冷笑，回家偷偷哭一整晚", scores: { TSUN: 4 } },
-      { text: "没关系，我从一开始就没信任过任何人", scores: { DIO: 3, SAGE: 1 } },
-      { text: "追上去质问，然后打一架", scores: { HERO: 4 } },
-      { text: "我不会让你有背叛的机会（微笑）", scores: { YAND: 4 } },
+      { text: "从一开始就没有信任过任何人", scores: { DIO: 4 } },
+      { text: "痛苦，但正面面对，重审自己的判断", scores: { SABER: 4 } },
+      { text: "背叛意味着彻底清除", scores: { DIO: 3 } },
+      { text: "只要那个人不背叛我就行，其他人随便", scores: { FEIYANYANG: 4 } },
     ],
   },
-  // ── Q3: 对弱者态度 ──
   {
     text: "路上看到有人被欺负，你的真实反应是？",
     options: [
-      { text: "冲上去，正义是不需要理由的", scores: { HERO: 4 } },
-      { text: "弱者被淘汰，这不是自然法则吗", scores: { DIO: 3, SAGE: 1 } },
-      { text: "戴上耳机假装没看见……好吧，最后还是偷偷报了警", scores: { TSUN: 3, OTAKU: 1 } },
-      { text: "如果那个人是我在乎的人，施暴者会消失", scores: { YAND: 4 } },
+      { text: "冲上去，正义不需要理由", scores: { SABER: 3, FEIYANYANG: 1 } },
+      { text: "弱者被淘汰，这不是自然法则吗", scores: { DIO: 4 } },
+      { text: "如果被欺负的是我在意的人，对方会消失", scores: { FEIYANYANG: 4 } },
+      { text: "我想改变让这种事不再发生的世界", scores: { SABER: 4 } },
     ],
   },
-  // ── Q4: 权力 ──
   {
-    text: "你突然成为一个国家的独裁者，第一件事做什么？",
+    text: "你日常做决定的方式最接近？",
     options: [
-      { text: "废除所有不合理的制度，还权于民", scores: { HERO: 3, SAGE: 1 } },
-      { text: "全国强制播放动漫，取消996", scores: { OTAKU: 4 } },
-      { text: "建立完美的监控体系，没人能背叛我", scores: { YAND: 3, DIO: 1 } },
-      { text: "不急，先让所有人跪下叫我陛下", scores: { DIO: 4 } },
+      { text: "按内心的原则和誓言，即使不利于自己", scores: { SABER: 4 } },
+      { text: "对自己最有利的选择，永远如此", scores: { DIO: 4 } },
+      { text: "那个人喜欢什么，我就做什么", scores: { FEIYANYANG: 4 } },
+      { text: "遵守规则，哪怕规则让人痛苦", scores: { SABER: 3 } },
     ],
   },
-  // ── Q5: 死亡 ──
   {
-    text: "如果你知道自己明天就要死了，今晚做什么？",
+    text: "你如何看待「身为王者的孤独」？",
     options: [
-      { text: "把想说的话全部说出来——然后，才不是因为怕死呢", scores: { TSUN: 4 } },
-      { text: "和最重要的人待在一起，哪怕只是沉默", scores: { YAND: 3, TSUN: 1 } },
-      { text: "无所谓，真正的王不会被死亡约束", scores: { DIO: 4 } },
-      { text: "把未看完的番看完，死也要死在二次元里", scores: { OTAKU: 3, SAGE: 1 } },
+      { text: "孤独是王者的命运，我承担", scores: { SABER: 3, DIO: 1 } },
+      { text: "孤独？我不需要任何人", scores: { DIO: 4 } },
+      { text: "只要那个人在身边，孤独跟我没关系", scores: { FEIYANYANG: 4 } },
+      { text: "孤独而善，比被背叛好得多", scores: { SABER: 4 } },
     ],
   },
-  // ── Q6: 杀戮本能 ──
-  {
-    text: "在大逃杀游戏里，你的生存策略是？",
-    options: [
-      { text: "躲在角落苟到最后——我可是猥琐发育型选手", scores: { OTAKU: 3, SAGE: 1 } },
-      { text: "正面刚！堂堂正正地赢才爽", scores: { HERO: 4 } },
-      { text: "微笑着和每个人结盟，然后在最后一刻……", scores: { DIO: 3, YAND: 1 } },
-      { text: "找到那个人，确保我们一起活到最后", scores: { YAND: 3, TSUN: 1 } },
-    ],
-  },
-  // ── Q7: 人际关系 ──
-  {
-    text: "你怎么看待「朋友」这个概念？",
-    options: [
-      { text: "朋友？棋子的另一种说法罢了", scores: { DIO: 4 } },
-      { text: "嘴上说不需要，但其实……别看我", scores: { TSUN: 4 } },
-      { text: "只需要一个就够了，但那个人必须只属于我", scores: { YAND: 4 } },
-      { text: "同伴就是用来并肩作战的！越多越好", scores: { HERO: 3, SAGE: 1 } },
-    ],
-  },
-  // ── Q8: 真实想法 ──
-  {
-    text: "深夜3点，你脑子里在想什么？",
-    options: [
-      { text: "如果这个世界其实是虚拟的呢……", scores: { SAGE: 3, OTAKU: 1 } },
-      { text: "那个人现在在想我吗？他手机亮了……", scores: { YAND: 3, TSUN: 1 } },
-      { text: "第二天的计划，以及谁该被清除出局", scores: { DIO: 3, SAGE: 1 } },
-      { text: "这集动漫好好看再刷一遍", scores: { OTAKU: 4 } },
-    ],
-  },
-  // ── Q9: 战斗 ──
   {
     text: "在战斗中你快要输了，你会？",
     options: [
-      { text: "站起来，再站起来，直到赢为止", scores: { HERO: 4 } },
+      { text: "站起来，再站起来，直到赢为止", scores: { SABER: 3, FEIYANYANG: 2 } },
       { text: "输？这个字不在我的词典里。（使用隐藏底牌）", scores: { DIO: 4 } },
-      { text: "表面认输，暗中找到对方的弱点等下次", scores: { SAGE: 3, YAND: 1 } },
-      { text: "才、才不会输呢！（实际上已经快哭了）", scores: { TSUN: 4 } },
+      { text: "承认弱点，重新审视自己的剩余实力", scores: { SABER: 4 } },
+      { text: "那个人还在看着我，不能倒下！", scores: { FEIYANYANG: 4 } },
     ],
   },
-  // ── Q10: 对人类的看法 ──
   {
-    text: "你觉得大多数人类是？",
+    text: "深夜 3 点，你脑子里在想什么？",
     options: [
-      { text: "虽然愚蠢，但值得被保护", scores: { HERO: 3, TSUN: 1 } },
-      { text: "蝼蚁而已", scores: { DIO: 4 } },
-      { text: "有趣的研究对象", scores: { SAGE: 3, OTAKU: 1 } },
-      { text: "无所谓，反正我只在乎一个人", scores: { YAND: 3, TSUN: 1 } },
+      { text: "我有没有真正守护到该守护的人", scores: { SABER: 4 } },
+      { text: "明天的计划，以及谁该被清除出局", scores: { DIO: 4 } },
+      { text: "那个人现在在干嘛，有没有想我", scores: { FEIYANYANG: 4 } },
+      { text: "代价太大了，是否有更好的方法", scores: { SABER: 3 } },
     ],
   },
-  // ── Q11: 被当众羞辱 ──
+  {
+    text: "一个强大的敌人告诉你：「你的信念是累赘」。你的回应？",
+    options: [
+      { text: "信念是我的力量源泉，不是弱点", scores: { SABER: 4 } },
+      { text: "一个人可以没有感情，不能没有力量", scores: { DIO: 4 } },
+      { text: "我的信念就是保护那个人，这是累赘吗？", scores: { FEIYANYANG: 4 } },
+      { text: "我不需要辩解，用结果证明一切", scores: { SABER: 3, DIO: 1 } },
+    ],
+  },
+  {
+    text: "你对「现在的自己」的评价是？",
+    options: [
+      { text: "还不够强，继续进化", scores: { DIO: 3, SABER: 1 } },
+      { text: "没有完成誓言之前，我不评价自己", scores: { SABER: 4 } },
+      { text: "我就是标准，不需要外部评价", scores: { DIO: 4 } },
+      { text: "只要那个人觉得我够好就行了", scores: { FEIYANYANG: 4 } },
+    ],
+  },
   {
     text: "有人在众人面前嘲笑你，你会？",
     options: [
-      { text: "脸红到脖子，说一句「你够了」然后逃走", scores: { TSUN: 4 } },
-      { text: "微笑着记住这个人的名字。他会后悔的", scores: { DIO: 3, YAND: 1 } },
-      { text: "当场还击，骂得他说不出话", scores: { HERO: 3, DIO: 1 } },
-      { text: "戴上耳机，打开手机，进入二次元结界", scores: { OTAKU: 3, SAGE: 1 } },
+      { text: "微笑着记住这个人的名字。他会后悔的", scores: { DIO: 4 } },
+      { text: "不作声色，把这当作驱动自己的燃料", scores: { SABER: 3, DIO: 1 } },
+      { text: "无所谓，只要那个人不嘲笑我就行", scores: { FEIYANYANG: 4 } },
+      { text: "我不证明自己，见过我行动的人自然明白", scores: { SABER: 4 } },
     ],
   },
-  // ── Q12: 爱情 ──
   {
-    text: "你的爱情观最接近哪一个？",
+    text: "你心目中「胜利」的定义是？",
     options: [
-      { text: "喜欢你但死也不说，等你先开口", scores: { TSUN: 4 } },
-      { text: "爱就是占有。没有例外", scores: { YAND: 4 } },
-      { text: "感情是弱点，我不需要", scores: { DIO: 3, SAGE: 1 } },
-      { text: "我的爱人是纸片人，谢谢", scores: { OTAKU: 4 } },
+      { text: "堂堂正正地赢，才是真正的胜利", scores: { SABER: 4 } },
+      { text: "赢就是赢，手段不重要", scores: { DIO: 3 } },
+      { text: "把对手踩在脚下，永远无法翻身", scores: { DIO: 4 } },
+      { text: "在那个人面前证明自己，就是胜利", scores: { FEIYANYANG: 4 } },
     ],
   },
-  // ── Q13: 最终boss ──
   {
-    text: "站在最终boss面前，你说什么？",
+    text: "你想被记住的方式是？",
     options: [
-      { text: "你做的一切到此为止了！", scores: { HERO: 4 } },
-      { text: "有趣，能打到这里的人很久没出现了", scores: { DIO: 4 } },
-      { text: "我已经算出你第37步的走法了", scores: { SAGE: 3, DIO: 1 } },
-      { text: "呃……能不能商量一下，我还没追完这季番", scores: { OTAKU: 3, TSUN: 1 } },
+      { text: "作为守护者，永远站在人们面前", scores: { SABER: 4 } },
+      { text: "作为绝对的王，让历史铭记恐惧", scores: { DIO: 4 } },
+      { text: "不在乎被记住，只在乎是否完成誓言", scores: { SABER: 3 } },
+      { text: "被那个人记住就够了，其他不重要", scores: { FEIYANYANG: 4 } },
     ],
   },
-  // ── Q14: 梦想 ──
   {
-    text: "你最真实的梦想是什么？",
+    text: "你认为「道德」是？",
     options: [
-      { text: "被所有人记住，哪怕是作为恐惧的代名词", scores: { DIO: 4 } },
-      { text: "和那个人永远在一起，只有我们两个就够了", scores: { YAND: 3, TSUN: 1 } },
-      { text: "成为最强，保护所有在乎的人", scores: { HERO: 3, TSUN: 1 } },
-      { text: "理解这个世界的真相", scores: { SAGE: 4 } },
+      { text: "无论何时都不可逾越的底线", scores: { SABER: 4 } },
+      { text: "强者给弱者设置的枷锁", scores: { DIO: 4 } },
+      { text: "我就是规则", scores: { DIO: 3, SABER: 1 } },
+      { text: "只要不伤害那个人，其他事我都好说", scores: { FEIYANYANG: 4 } },
     ],
   },
-  // ── Q15: 灵魂拷问 ──
   {
-    text: "最后：你觉得自己骨子里最像谁？",
+    text: "如果你喜欢的人喜欢上了别人，你会？",
     options: [
-      { text: "路飞 / �的接班人——永远热血，永远冲", scores: { HERO: 4 } },
-      { text: "DIO——这个世界终将是我的", scores: { DIO: 4 } },
-      { text: "我推的角色——三次元不配拥有我", scores: { OTAKU: 3, YAND: 1 } },
-      { text: "L / 奇拉——坐在暗处操控一切", scores: { SAGE: 3, DIO: 1 } },
+      { text: "尊重对方的选择，克制自己的感情", scores: { SABER: 4 } },
+      { text: "把竞争对手从棋盘上抹掉", scores: { DIO: 3 } },
+      { text: "绝对不接受！正面硬刚那个人！", scores: { FEIYANYANG: 4 } },
+      { text: "将此化为支配欲，把所有变量都清除", scores: { DIO: 4 } },
+    ],
+  },
+  {
+    text: "最后一题：你骨子里最相信的一句话？",
+    options: [
+      { text: "「即使没有人看见，我也会做正确的事。」", scores: { SABER: 4 } },
+      { text: "「这个世界，终将是我的。」", scores: { DIO: 4 } },
+      { text: "「誓言一旦立下，就必须用生命守护。」", scores: { SABER: 3 } },
+      { text: "「为了那个人，我什么都能做到！」", scores: { FEIYANYANG: 4 } },
     ],
   },
 ];
 
 /* ── 状态 ── */
-let currentIndex = 0;
-let scores = {};
+var currentIndex = 0;
+var scores = {};
 
 /* ── 工具函数 ── */
 function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".screen").forEach(function(s) { s.classList.remove("active"); });
   document.getElementById(id).classList.add("active");
   window.scrollTo(0, 0);
 }
 
 function resetScores() {
   scores = {};
-  Object.keys(TYPES).forEach(k => { scores[k] = 0; });
+  Object.keys(TYPES).forEach(function(k) { scores[k] = 0; });
 }
 
 function calcResult() {
-  return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  return Object.entries(scores).sort(function(a, b) { return b[1] - a[1]; })[0][0];
 }
 
 /* ── 渲染题目 ── */
 function renderQuestion(index) {
-  const q = QUESTIONS[index];
-  const total = QUESTIONS.length;
+  var q = QUESTIONS[index];
+  var total = QUESTIONS.length;
 
   document.getElementById("progress-fill").style.width = (index / total * 100) + "%";
   document.getElementById("q-index").textContent = "第 " + (index + 1) + " 题";
   document.getElementById("q-total").textContent = "/ 共 " + total + " 题";
   document.getElementById("question-text").textContent = q.text;
 
-  const grid = document.getElementById("options-grid");
+  var grid = document.getElementById("options-grid");
   grid.innerHTML = "";
   delete grid.dataset.locked;
 
   q.options.forEach(function(opt) {
-    const btn = document.createElement("button");
+    var btn = document.createElement("button");
     btn.className = "option-btn";
     btn.innerHTML = "<span>" + opt.text + "</span>";
     btn.addEventListener("click", function() { selectOption(btn, opt.scores); });
@@ -866,7 +800,7 @@ function renderQuestion(index) {
 
 /* ── 选择选项 ── */
 function selectOption(btn, optScores) {
-  const grid = document.getElementById("options-grid");
+  var grid = document.getElementById("options-grid");
   if (grid.dataset.locked) return;
   grid.dataset.locked = "1";
 
@@ -890,31 +824,26 @@ function selectOption(btn, optScores) {
 function showResult() {
   document.getElementById("progress-fill").style.width = "100%";
 
-  const key = calcResult();
-  const t = TYPES[key];
+  var key = calcResult();
+  var t = TYPES[key];
 
-  // 稀有度
   var rarityColors = { legendary: "#efbf04", rare: "#c084fc", uncommon: "#38bdf8", common: "#6b7280" };
-  var rarityNames = { legendary: "LEGENDARY", rare: "RARE", uncommon: "UNCOMMON", common: "COMMON" };
+  var rarityNames  = { legendary: "LEGENDARY", rare: "RARE", uncommon: "UNCOMMON", common: "COMMON" };
   var badge = document.getElementById("rarity-badge");
   badge.textContent = rarityNames[t.rarityLabel] || "COMMON";
   badge.style.background = rarityColors[t.rarityLabel] || "#6b7280";
   document.getElementById("rarity-pct").textContent = t.rarity;
 
-  // 基本信息
-  document.getElementById("result-code").textContent = t.code;
+  document.getElementById("result-code").textContent = t.name;
   document.getElementById("result-code").style.color = t.color;
-  document.getElementById("result-name").textContent = t.name;
+  document.getElementById("result-name").textContent = t.series;
   document.getElementById("result-tagline").textContent = t.tagline;
 
-  // 灵魂拷问
   document.getElementById("soul-quote").textContent = t.soulQuote;
 
-  // 描述
   document.getElementById("result-desc").textContent = t.desc;
   document.getElementById("result-desc").style.borderLeftColor = t.color;
 
-  // 危险等级
   var dotsEl = document.getElementById("danger-dots");
   dotsEl.innerHTML = "";
   for (var i = 0; i < 5; i++) {
@@ -923,23 +852,15 @@ function showResult() {
     dotsEl.appendChild(dot);
   }
 
-  // 代表角色
-  document.getElementById("anime-chars").textContent = t.animeChars;
-
-  // emoji
+  document.getElementById("result-series").textContent = t.series;
   document.getElementById("result-emoji").textContent = t.emoji;
-
-  // 契合/相克
-  document.getElementById("compat-good").textContent = t.compatible;
-  document.getElementById("compat-bad").textContent = t.incompatible;
 
   var card = document.getElementById("result-card");
   card.style.borderColor = t.color + "40";
 
-  // 特征标签
   var traitsEl = document.getElementById("result-traits");
   traitsEl.innerHTML = "";
-  t.traits.forEach(function(tr) {
+  t.tags.forEach(function(tr) {
     var chip = document.createElement("span");
     chip.className = "trait-chip";
     chip.textContent = tr;
@@ -949,22 +870,17 @@ function showResult() {
     traitsEl.appendChild(chip);
   });
 
-  // 尝试加载图片，失败则显示 CSS 占位
   var slot = document.getElementById("result-image-slot");
   slot.innerHTML = "";
-  if (t.image) {
-    var img = new Image();
-    img.onload = function() {
-      slot.innerHTML = "";
-      slot.appendChild(img);
-    };
-    img.onerror = function() {
-      slot.innerHTML = '<div class="img-placeholder" style="background:linear-gradient(135deg,' + t.color + '22,' + t.color + '08)"><span style="font-size:4rem">' + t.emoji + '</span><span style="color:' + t.color + ';font-size:1.1rem;font-weight:700">' + t.name + '</span></div>';
-    };
-    img.src = t.image;
-  } else {
+  var img = new Image();
+  img.onload = function() {
+    slot.innerHTML = "";
+    slot.appendChild(img);
+  };
+  img.onerror = function() {
     slot.innerHTML = '<div class="img-placeholder" style="background:linear-gradient(135deg,' + t.color + '22,' + t.color + '08)"><span style="font-size:4rem">' + t.emoji + '</span><span style="color:' + t.color + ';font-size:1.1rem;font-weight:700">' + t.name + '</span></div>';
-  }
+  };
+  img.src = t.image;
 
   showScreen("screen-result");
 }
@@ -982,13 +898,12 @@ var App = {
     var key = calcResult();
     var t = TYPES[key];
     var text = "【次元人格测定 ANITI】\n\n" +
-      "我的人格类型：" + t.code + " " + t.name + "\n" +
+      "我是：" + t.name + "（" + t.series + "）\n" +
       t.tagline + "\n\n" +
       "// " + t.soulQuote + "\n\n" +
       "稀有度：" + t.rarity + "（" + t.rarityLabel.toUpperCase() + "）\n" +
-      "危险指数：" + Array(t.dangerLevel + 1).join("\u2588") + Array(6 - t.dangerLevel).join("\u2591") + "\n" +
-      "同类角色：" + t.animeChars + "\n\n" +
-      "你也来测测？\nhttps://mbtianime.com";
+      "危险指数：" + Array(t.dangerLevel + 1).join("█") + Array(6 - t.dangerLevel).join("░") + "\n\n" +
+      "你是哪个角色？\nhttps://mbtianime.com";
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(showToast).catch(function() { alert(text); });
     } else {

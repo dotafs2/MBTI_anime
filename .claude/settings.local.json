@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:sbti.unun.dev)",
+      "Bash(git config:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git -C /c/MBTI_anime add images/hero.png)",
+      "Bash(git -C /c/MBTI_anime commit -m \"asset: add Saber illustration for HERO type\")",
+      "Bash(git -C /c/MBTI_anime push)",
+      "Bash(grep -n \"^const QUESTIONS\\\\|^  {$\\\\|text:\\\\|_showResult\\\\|result-code\\\\|result-name\\\\|compat\\\\|soulQuote\\\\|rarity\\\\|danger\\\\|animeChar\" /c/MBTI_anime/index.html)",
+      "Bash(python3 -c \":*)",
+      "Bash(python3:*)",
+      "Bash(git -C /c/MBTI_anime add -A)",
+      "Bash(git -C /c/MBTI_anime commit -m \"feat: overhaul to character-based system \\(Saber/DIO/沸羊羊\\), rewrite all questions\")"
+    ]
+  }
+}
