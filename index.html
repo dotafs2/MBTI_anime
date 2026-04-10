@@ -120,6 +120,25 @@ body {
   background-clip: text;
 }
 
+.landing-hooks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  text-align: left;
+}
+.landing-hooks li {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.5;
+  padding: 0.55rem 0.9rem;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  border-left: 3px solid rgba(192,132,252,0.5);
+}
+
 .main-desc {
   font-size: 1rem;
   color: var(--muted);
@@ -538,12 +557,14 @@ body {
       <div class="orb orb-3"></div>
     </div>
     <div class="landing-content">
-      <div class="badge">ANITI &middot; 次元人格测定系统 v1.0</div>
-      <h1 class="main-title">骨子里<br/>你是<span class="title-highlight">哪个人</span>？</h1>
-      <p class="main-desc">
-        不是类型，不是标签。<br/>
-        15 道题，找到那个住在你身体里的角色。
-      </p>
+      <div class="badge">ANITI &middot; 次元人格测定</div>
+      <h1 class="main-title">你骨子里<br/>住着<span class="title-highlight">哪个角色</span>？</h1>
+      <ul class="landing-hooks">
+        <li>🔥 你是否一直有中二幻想，却没人理解？</li>
+        <li>🩸 有没有想过，自己黑化之后会是什么样？</li>
+        <li>⚡ 想不想知道——你和哪个二次元角色灵魂契合？</li>
+      </ul>
+      <p class="main-desc">20 道题，9 种人格原型，<br/>测出那个真正住在你身体里的家伙。</p>
       <button class="btn-primary" onclick="App.start()">开始测定</button>
       <p class="disclaimer">本测试仅供娱乐 &middot; 请勿对号入座 &middot; 如有雷同请检举你的朋友</p>
     </div>
