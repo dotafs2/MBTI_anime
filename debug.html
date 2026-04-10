@@ -378,7 +378,11 @@
   }
 
   function previewResult(key) {
-    localStorage.setItem('aniti_result', key);
+    // Build a fake scores object where the target key is at max, others are 0
+    var fakeScores = {};
+    Object.keys(TYPES).forEach(function(k) { fakeScores[k] = 0; });
+    fakeScores[key] = maxScores[key] || 99;
+    localStorage.setItem('aniti_result', JSON.stringify({ key: key, scores: fakeScores }));
     window.open('index.html', '_blank');
   }
 

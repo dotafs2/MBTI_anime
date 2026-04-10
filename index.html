@@ -288,7 +288,7 @@ body {
   background: var(--card2);
   border: 1px dashed rgba(160,120,255,0.25);
 }
-.result-image-slot img { width: 100%; height: 100%; object-fit: cover; }
+.result-image-slot img { width: 100%; height: 100%; object-fit: contain; }
 
 .img-placeholder {
   width: 100%;
@@ -432,6 +432,40 @@ body {
 
 .result-disclaimer { text-align: center; font-size: 0.7rem; color: #3a3858; }
 
+.github-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+  font-size: 0.7rem;
+  color: #5a5880;
+  text-decoration: none;
+}
+.github-link:hover { color: #9d9bba; }
+
+.qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+}
+.qr-section canvas {
+  width: 96px !important;
+  height: 96px !important;
+  border-radius: 6px;
+  image-rendering: pixelated;
+}
+.qr-label {
+  font-size: 0.65rem;
+  color: #8b8aad;
+  letter-spacing: 0.03em;
+}
+
 /* ===================== TOAST ===================== */
 .toast {
   position: fixed;
@@ -483,6 +517,7 @@ body {
   .btn-primary { min-height: 52px; }
 }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -555,10 +590,17 @@ body {
         </div>
       </div>
       <div class="result-actions">
-        <button class="btn-primary" onclick="App.share()" id="share-btn">生成分享图片</button>
         <button class="btn-secondary" onclick="App.retry()">再测一次</button>
       </div>
       <p class="result-disclaimer">本测试仅供娱乐 &middot; 不作为任何诊断依据</p>
+      <div class="qr-section">
+        <canvas id="qr-canvas"></canvas>
+        <p class="qr-label">扫码测试 · mbtianime.com</p>
+      </div>
+      <a class="github-link" href="https://github.com/dotafs2/MBTI_anime" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        GitHub · dotafs2/MBTI_anime
+      </a>
     </div>
   </div>
 
@@ -666,15 +708,15 @@ const TYPES = {
     code: "MOMO",
     name: "光月御门之助",
     series: "海贼王",
-    tagline: "「我才不害怕！我是光月御门之助！」",
+    tagline: "「这位女士，在下有礼了……」",
     color: "#8b5cf6",
     emoji: "🐉",
     image: "images/momo.png",
     rarity: "18.3%", rarityLabel: "uncommon",
-    stats: { danger: 2, love: 3, chuuni: 4, survival: 3, dark: 3, iq: 2 },
-    soulQuote: "你嘴上说「我才不怕」，但手在发抖。没关系——真正的勇气从来不是没有恐惧，而是颤抖着也要往前。",
-    desc: "你是家门里最后的血脉，背负着所有人的牺牲长大。你哭过，逃过，也在众人面前假装很厉害——但你一直没有放弃。你用最笨的方式，一步一步走到了今天。别人眼里你是「废物少主」，但有一天，你站在了整个国家的顶点，成为了将军。不是因为你天生强大，而是因为你从没有真正放弃过。",
-    tags: ["废物少主", "我才不害怕", "眼泪是真的", "龙", "将军大人"],
+    stats: { danger: 2, love: 5, chuuni: 4, survival: 3, dark: 1, iq: 1 },
+    soulQuote: "身体是孩子的，灵魂是老头子的，眼神是色狼的。",
+    desc: "你的全部人格可以用一句话概括：老色狼。不管走到哪里，眼睛总是先找到该找的地方。你会一本正经地行礼，措辞文雅，态度谦恭——然后在下一秒做出让所有人目瞪口呆的事。你对自己的行为毫无悔意，甚至觉得这是一种风度。被人打飞了，拍拍衣服站起来，下次还是照旧。这不是病，这是境界。",
+    tags: ["老色狼", "风度翩翩", "屡教不改", "龙", "将军大人也不例外"],
   },
   RENGOKU: {
     code: "RENGOKU",
@@ -694,15 +736,15 @@ const TYPES = {
     code: "LIONHEART",
     name: "狮心王",
     series: "噬魂师 / Soul Eater",
-    tagline: "「FOOL！恒久遥远——Excalibur！！」",
+    tagline: "骑士不会空手而亡",
     color: "#f59e0b",
     emoji: "⚡",
     image: "images/lionheart.png",
     rarity: "0.9%", rarityLabel: "legendary",
     stats: { danger: 3, love: 0, chuuni: 5, survival: 1, dark: 2, iq: 2 },
-    soulQuote: "你把手边每一样东西都命名为「Excalibur」——那把剑叫 Excalibur，那把小刀叫 Excalibur，那张羊皮纸也叫 Excalibur，就连路边捡到的树枝也叫 Excalibur。别人觉得你疯了。但你清楚地知道：传说不需要解释。",
-    desc: "你天生就是传说。不是因为你做了什么，而是因为你就是你。你的剑叫 Excalibur，你的刀叫 Excalibur，你的笔记本、你的外套、你桌上那杯水——全都叫 Excalibur。有人问你为什么，你只是微微一笑，转身离开。你不解释，因为真正的骑士从不为自己辩解。你的存在本身就是一个宣言：骑士，不徒手而亡。恒久遥远 ——Ex—calibur！！胜利之剑！！",
-    tags: ["FOOL!", "传说之剑", "骑士不徒手而亡", "中二拉满", "无人能理解我"],
+    soulQuote: "传说不需要解释——你就是那把剑，那把剑就是你。",
+    desc: "据说他太过于痴迷😋自己手中拿的任何东西🤔，什么都冠🤩上于与那把圣剑☀️🗡相同的名字。剑当然不用说😅，连小刀🔪和羊皮纸✍🏻，甚至随处掉在地上的木棍也是😉；这把剑🗡正是那迈向曾追逐奇迹的🤫荣光之道😡，瞻仰🤩那份意志制的信仰之结晶😡，悲创😢而崇高😌的梦想啊😡，绝不受任何阻挠👊🏻直到世界尽头🖼！此时再度铭刻😡这把剑正是！恒久遥远🤩-Ex—calibur!!）胜利之剑！！🗡😡",
+    tags: ["FOOL!", "传说之剑", "骑士不会空手而亡", "中二拉满", "无人能理解我"],
   },
 };
 
@@ -1066,7 +1108,14 @@ function showResult() {
   };
   img.src = t.image;
 
-  localStorage.setItem("aniti_result", key);
+  localStorage.setItem("aniti_result", JSON.stringify({ key: key, scores: scores }));
+
+  // 生成二维码
+  var qrCanvas = document.getElementById("qr-canvas");
+  if (qrCanvas && typeof QRCode !== "undefined") {
+    QRCode.toCanvas(qrCanvas, "https://mbtianime.com", { width: 192, margin: 1, color: { dark: "#1a1830", light: "#ffffff" } }, function() {});
+  }
+
   showScreen("screen-result");
 }
 
@@ -1082,179 +1131,6 @@ var App = {
     localStorage.removeItem("aniti_result");
     App.start();
   },
-  share: function() {
-    var btn = document.getElementById("share-btn");
-    btn.textContent = "生成中…";
-    btn.disabled = true;
-
-    var key = calcResult();
-    var t = TYPES[key];
-
-    var W = 750, H = 1080;
-    var canvas = document.createElement("canvas");
-    canvas.width = W; canvas.height = H;
-    var ctx = canvas.getContext("2d");
-
-    function drawCard(charImg, qrImg) {
-      // 背景
-      var bg = ctx.createLinearGradient(0, 0, W, H);
-      bg.addColorStop(0, "#080812");
-      bg.addColorStop(1, "#10101e");
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, W, H);
-
-      // 顶部色条
-      ctx.fillStyle = t.color;
-      ctx.fillRect(0, 0, W, 6);
-
-      // 左侧竖线装饰
-      ctx.fillStyle = t.color + "60";
-      ctx.fillRect(40, 40, 4, H - 80);
-
-      // 角色图片（居中上方）
-      var imgW = 340, imgH = 340;
-      var imgX = (W - imgW) / 2, imgY = 60;
-      if (charImg) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.roundRect(imgX, imgY, imgW, imgH, 20);
-        ctx.clip();
-        ctx.drawImage(charImg, imgX, imgY, imgW, imgH);
-        ctx.restore();
-      } else {
-        ctx.fillStyle = t.color + "22";
-        ctx.beginPath();
-        ctx.roundRect(imgX, imgY, imgW, imgH, 20);
-        ctx.fill();
-        ctx.fillStyle = t.color;
-        ctx.font = "bold 80px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(t.emoji, W / 2, imgY + imgH / 2 + 28);
-      }
-
-      // 角色名
-      ctx.fillStyle = t.color;
-      ctx.font = "bold 72px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(t.name, W / 2, imgY + imgH + 70);
-
-      // 作品名
-      ctx.fillStyle = "rgba(255,255,255,0.45)";
-      ctx.font = "28px sans-serif";
-      ctx.fillText(t.series, W / 2, imgY + imgH + 110);
-
-      // tagline
-      ctx.fillStyle = "rgba(255,255,255,0.7)";
-      ctx.font = "italic 26px sans-serif";
-      ctx.fillText(t.tagline, W / 2, imgY + imgH + 155);
-
-      // 分割线
-      ctx.strokeStyle = "rgba(255,255,255,0.08)";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(60, imgY + imgH + 180);
-      ctx.lineTo(W - 60, imgY + imgH + 180);
-      ctx.stroke();
-
-      // 五维指数
-      var STATS_META = [
-        { key: "danger",   label: "危险指数",   color: "#ef4444" },
-        { key: "love",     label: "恋爱脑指数", color: "#f472b6" },
-        { key: "chuuni",   label: "中二指数",   color: "#c084fc" },
-        { key: "survival", label: "队友存活率", color: "#34d399" },
-        { key: "dark",     label: "黑化概率",   color: "#94a3b8" },
-        { key: "iq",       label: "智力指数",   color: "#60a5fa" },
-      ];
-      var statY = imgY + imgH + 210;
-      var statRowH = 52;
-      ctx.font = "bold 24px sans-serif";
-      STATS_META.forEach(function(m, i) {
-        var y = statY + i * statRowH;
-        var val = (t.stats && t.stats[m.key]) || 0;
-        ctx.fillStyle = "rgba(255,255,255,0.5)";
-        ctx.textAlign = "left";
-        ctx.fillText(m.label, 70, y + 20);
-        for (var d = 0; d < 5; d++) {
-          ctx.fillStyle = d < val ? m.color : "rgba(255,255,255,0.1)";
-          ctx.beginPath();
-          ctx.roundRect(300 + d * 44, y, 36, 30, 5);
-          ctx.fill();
-        }
-      });
-
-      // 稀有度 badge
-      var rarityColors = { legendary: "#efbf04", rare: "#c084fc", uncommon: "#38bdf8", common: "#6b7280" };
-      var rarityNames  = { legendary: "LEGENDARY", rare: "RARE", uncommon: "UNCOMMON", common: "COMMON" };
-      var badgeY = statY + STATS_META.length * statRowH + 30;
-      ctx.fillStyle = rarityColors[t.rarityLabel] || "#6b7280";
-      ctx.beginPath();
-      ctx.roundRect(70, badgeY, 160, 36, 18);
-      ctx.fill();
-      ctx.fillStyle = "#fff";
-      ctx.font = "bold 20px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(rarityNames[t.rarityLabel] || "COMMON", 150, badgeY + 24);
-
-      ctx.fillStyle = "rgba(255,255,255,0.5)";
-      ctx.font = "22px sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText("仅 " + t.rarity + " 的人测到此角色", 248, badgeY + 24);
-
-      // QR code 右下角
-      var qrSize = 120, qrPad = 40;
-      var qrX = W - qrSize - qrPad, qrY = H - qrSize - qrPad - 24;
-      if (qrImg) {
-        ctx.fillStyle = "rgba(0,0,0,0.5)";
-        ctx.beginPath();
-        ctx.roundRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 36, 10);
-        ctx.fill();
-        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-        ctx.fillStyle = "rgba(255,255,255,0.6)";
-        ctx.font = "18px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("mbtianime.com", qrX + qrSize / 2, qrY + qrSize + 22);
-      }
-
-      // 底部水印
-      ctx.fillStyle = "rgba(255,255,255,0.2)";
-      ctx.font = "20px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("ANITI · 次元人格测定  mbtianime.com", W / 2, H - 24);
-
-      // 导出
-      canvas.toBlob(function(blob) {
-        btn.textContent = "生成分享图片";
-        btn.disabled = false;
-        var file = new File([blob], "aniti-" + t.code + ".png", { type: "image/png" });
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({ files: [file], title: "ANITI 次元人格测定", text: "我是 " + t.name + "！" }).catch(function(){});
-        } else {
-          var a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = "aniti-" + t.code + ".png";
-          a.click();
-        }
-      }, "image/png");
-    }
-
-    // 并行加载角色图 + QR，任一失败都能降级
-    var charImg = null, qrImg = null, loaded = 0;
-    function onLoaded() {
-      loaded++;
-      if (loaded === 2) drawCard(charImg, qrImg);
-    }
-    var ci = new Image();
-    ci.crossOrigin = "anonymous";
-    ci.onload = function() { charImg = ci; onLoaded(); };
-    ci.onerror = onLoaded;
-    ci.src = t.image;
-
-    var qi = new Image();
-    qi.crossOrigin = "anonymous";
-    qi.onload = function() { qrImg = qi; onLoaded(); };
-    qi.onerror = onLoaded;
-    qi.src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https%3A%2F%2Fmbtianime.com&bgcolor=000000&color=ffffff&format=png";
-  },
 };
 
 function showToast() {
@@ -1265,14 +1141,31 @@ function showToast() {
 
 /* ── 页面加载时恢复上次结果 ── */
 (function() {
-  var saved = localStorage.getItem("aniti_result");
-  if (saved && TYPES[saved]) {
+  var raw = localStorage.getItem("aniti_result");
+  if (!raw) return;
+  try {
+    var saved = JSON.parse(raw);
+    var key = saved.key || saved; // 兼容旧格式（纯字符串）
+    if (!TYPES[key]) { localStorage.removeItem("aniti_result"); return; }
     scores = {};
     Object.keys(TYPES).forEach(function(k) { scores[k] = 0; });
-    scores[saved] = 99;
+    if (saved.scores) {
+      Object.keys(saved.scores).forEach(function(k) { scores[k] = saved.scores[k] || 0; });
+    } else {
+      // 旧格式：无分数数据，用最高可能得分填充使契合度显示100%
+      var maxP = {};
+      Object.keys(TYPES).forEach(function(k) { maxP[k] = 0; });
+      QUESTIONS.forEach(function(q) {
+        Object.keys(TYPES).forEach(function(k) {
+          var best = 0;
+          q.options.forEach(function(opt) { if ((opt.scores[k]||0) > best) best = opt.scores[k]||0; });
+          maxP[k] = (maxP[k]||0) + best;
+        });
+      });
+      scores[key] = maxP[key] || 1;
+    }
     try { showResult(); } catch(e) { localStorage.removeItem("aniti_result"); }
-  } else if (saved) {
-    // 旧版存的类型已不存在，清掉
+  } catch(e) {
     localStorage.removeItem("aniti_result");
   }
 })();
