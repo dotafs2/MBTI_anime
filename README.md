@@ -10,11 +10,7 @@
 
 ## 灵感来源 / Inspired By
 
-本项目灵感来自 B 站 UP 主 **[@蛆肉儿串儿](https://space.bilibili.com/417038183)** 制作的 **[SBTI](https://sbti.unun.dev/)**——
-
-> **「MBTI 已经过时，SBTI 来了。」**
-
-SBTI 是蛆肉儿串儿原创的人格测试格式，托管于 Cloudflare，域名自费。ANITI 在此基础上进行了二次创作，以动漫世界观为核心重新设计了人格类型与题目体系。
+**[SBTI](https://sbti.unun.dev/)** by **[@蛆肉儿串儿](https://space.bilibili.com/417038183)**
 
 ---
 
