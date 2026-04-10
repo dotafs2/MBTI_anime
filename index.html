@@ -1091,9 +1091,15 @@ function showResult() {
   document.getElementById("result-name").textContent = t.series;
   document.getElementById("result-tagline").textContent = t.tagline;
 
-  // 计算相似度：用户得分 / 该角色最高可能得分
-  var maxPossible = calcMaxPossible();
-  var simPct = maxPossible[key] > 0 ? Math.round((scores[key] / maxPossible[key]) * 100) : 0;
+  // 计算相似度：基于 z-score 映射到合理百分比
+  var zParams = calcZScoreParams();
+  var zScore = (scores[key] - zParams.mean[key]) / zParams.stddev[key];
+  // 用正态CDF近似，映射到 50%~99% 区间
+  var t_cdf = 1 / (1 + 0.2316419 * Math.abs(zScore));
+  var d = 0.3989422804 * Math.exp(-zScore * zScore / 2);
+  var p = d * t_cdf * (0.3193815 + t_cdf * (-0.3565638 + t_cdf * (1.781478 + t_cdf * (-1.821256 + t_cdf * 1.330274))));
+  if (zScore > 0) p = 1 - p;
+  var simPct = Math.min(99, Math.max(51, Math.round(p * 100)));
   var simEl = document.getElementById("result-similarity");
   simEl.textContent = "与" + t.name + "的契合度 " + simPct + "%";
   simEl.style.color = t.color;
