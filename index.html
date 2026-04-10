@@ -4,7 +4,365 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>次元人格测定 | ANITI</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+/* ===================== RESET & BASE ===================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080812;
+  --card: #10101e;
+  --card2: #15152a;
+  --border: rgba(160, 120, 255, 0.18);
+  --text: #e8e6f0;
+  --muted: #8a86a8;
+  --accent: #c084fc;
+  --accent2: #f472b6;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --ease: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===================== SCREENS ===================== */
+.screen {
+  display: none;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
+.screen.active { display: flex; }
+
+/* ===================== LANDING ===================== */
+#screen-landing {
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.landing-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  animation: drift 9s ease-in-out infinite;
+}
+.orb-1 { width: 480px; height: 480px; background: #7c3aed; top: -150px; left: -120px; animation-delay: 0s; }
+.orb-2 { width: 380px; height: 380px; background: #db2777; bottom: -100px; right: -100px; animation-delay: -3s; }
+.orb-3 { width: 280px; height: 280px; background: #0369a1; top: 45%; left: 55%; animation-delay: -5.5s; }
+
+@keyframes drift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33% { transform: translate(24px,-36px) scale(1.06); }
+  66% { transform: translate(-18px,22px) scale(0.94); }
+}
+
+.landing-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  max-width: 520px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: rgba(192,132,252,0.12);
+  border: 1px solid rgba(192,132,252,0.3);
+  border-radius: 100px;
+  padding: 0.35em 1em;
+  margin-bottom: 1.8rem;
+  text-transform: uppercase;
+}
+
+.main-title {
+  font-size: clamp(2.4rem, 9vw, 3.8rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 1.2rem;
+  letter-spacing: -0.02em;
+}
+.title-highlight {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.main-desc {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 2.4rem;
+}
+
+.disclaimer {
+  margin-top: 1.2rem;
+  font-size: 0.7rem;
+  color: #3a3860;
+}
+
+/* ===================== BUTTONS ===================== */
+.btn-primary {
+  display: inline-block;
+  background: linear-gradient(135deg, #c084fc, #f472b6);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 0.85em 2.6em;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: var(--ease);
+  box-shadow: 0 0 28px rgba(192,132,252,0.4);
+  letter-spacing: 0.03em;
+  font-family: inherit;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(192,132,252,0.6); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  display: inline-block;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.8em 2em;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: var(--ease);
+  font-family: inherit;
+}
+.btn-secondary:hover { color: var(--text); border-color: rgba(160,120,255,0.4); }
+
+/* ===================== QUESTION SCREEN ===================== */
+#screen-question {
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 3rem;
+}
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  width: 0%;
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 10px rgba(192,132,252,0.6);
+}
+
+.question-wrap {
+  width: 100%;
+  max-width: 600px;
+  padding: 2.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  flex: 1;
+}
+
+.question-meta { display: flex; align-items: baseline; gap: 0.4rem; font-size: 0.85rem; }
+.question-meta #q-index { color: var(--accent); font-weight: 700; font-size: 1rem; }
+.question-meta #q-total { color: var(--muted); }
+
+.question-text {
+  font-size: clamp(1.15rem, 3.5vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.options-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.option-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 0.97rem;
+  font-family: inherit;
+  line-height: 1.55;
+  padding: 1em 1.3em;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.option-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #c084fc, #f472b6);
+  opacity: 0;
+  transition: opacity var(--ease);
+}
+.option-btn > span { position: relative; z-index: 1; }
+.option-btn:hover { border-color: rgba(192,132,252,0.5); transform: translateX(4px); }
+.option-btn:hover::before { opacity: 0.08; }
+.option-btn.selected { border-color: var(--accent); background: var(--card2); }
+.option-btn.selected::before { opacity: 0.14; }
+
+/* ===================== RESULT SCREEN ===================== */
+#screen-result {
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+}
+
+.result-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.result-header { text-align: center; }
+
+.result-code {
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+  /* color set inline by JS */
+}
+.result-name { font-size: 1.4rem; font-weight: 700; }
+.result-tagline { font-size: 0.9rem; color: var(--muted); margin-top: 0.3rem; font-style: italic; }
+
+.result-image-slot {
+  width: 100%;
+  aspect-ratio: 3/2;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--card2);
+  border: 1px dashed rgba(160,120,255,0.25);
+}
+.result-image-slot img { width: 100%; height: 100%; object-fit: cover; }
+
+.img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.img-placeholder span { font-size: 2.8rem; }
+
+.result-desc {
+  font-size: 0.97rem;
+  color: var(--muted);
+  line-height: 1.78;
+  background: var(--card2);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.2rem;
+  /* border-left color set by JS */
+  border-left: 3px solid var(--accent);
+}
+
+.result-traits { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.trait-chip {
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 100px;
+  padding: 0.3em 0.9em;
+  /* colors set by JS */
+}
+
+.result-compat { display: flex; gap: 1rem; }
+.compat-item {
+  flex: 1;
+  background: var(--card2);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border: 1px solid var(--border);
+}
+.compat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.compat-val { font-size: 1rem; font-weight: 800; letter-spacing: 0.08em; }
+
+.result-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.result-actions .btn-primary,
+.result-actions .btn-secondary { flex: 1; text-align: center; }
+
+.result-disclaimer { text-align: center; font-size: 0.7rem; color: #3a3858; }
+
+/* ===================== TOAST ===================== */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: #1e1e36;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.88rem;
+  padding: 0.7em 1.6em;
+  border-radius: 100px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 999;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 480px) {
+  .result-card { padding: 1.5rem 1.2rem; }
+  .result-compat { flex-direction: column; }
+  .result-actions { flex-direction: column; }
+  .result-actions .btn-primary,
+  .result-actions .btn-secondary { width: 100%; }
+}
+  </style>
 </head>
 <body>
 
@@ -16,14 +374,14 @@
       <div class="orb orb-3"></div>
     </div>
     <div class="landing-content">
-      <div class="badge">ANITI · 次元人格测定系统 v1.0</div>
+      <div class="badge">ANITI &middot; 次元人格测定系统 v1.0</div>
       <h1 class="main-title">你是哪种<br/><span class="title-highlight">次元人格</span>？</h1>
       <p class="main-desc">
         15 道题，测出你的真实二次元属性。<br/>
         你究竟是傲娇、魔王、勇者、还是彻底的宅？
       </p>
       <button class="btn-primary" onclick="App.start()">开始测定</button>
-      <p class="disclaimer">本测试仅供娱乐 · 请勿对号入座 · 如有雷同请检举你的朋友</p>
+      <p class="disclaimer">本测试仅供娱乐 &middot; 请勿对号入座 &middot; 如有雷同请检举你的朋友</p>
     </div>
   </div>
 
@@ -46,14 +404,13 @@
   <div id="screen-result" class="screen">
     <div class="result-card" id="result-card">
       <div class="result-header">
-        <div class="result-code" id="result-code">TSUN</div>
-        <div class="result-name" id="result-name">傲娇型</div>
-        <div class="result-tagline" id="result-tagline">"才、才不是为了你！"</div>
+        <div class="result-code" id="result-code"></div>
+        <div class="result-name" id="result-name"></div>
+        <div class="result-tagline" id="result-tagline"></div>
       </div>
       <div class="result-image-slot" id="result-image-slot">
-        <!-- 图片占位 -->
         <div class="img-placeholder">
-          <span id="result-emoji">🌸</span>
+          <span id="result-emoji"></span>
           <small>图片施工中</small>
         </div>
       </div>
@@ -73,13 +430,364 @@
         <button class="btn-primary" onclick="App.share()">复制结果分享</button>
         <button class="btn-secondary" onclick="App.retry()">再测一次</button>
       </div>
-      <p class="result-disclaimer">本测试仅供娱乐 · 不作为任何诊断依据</p>
+      <p class="result-disclaimer">本测试仅供娱乐 &middot; 不作为任何诊断依据</p>
     </div>
   </div>
 
   <!-- ========== TOAST ========== -->
   <div id="toast" class="toast">已复制到剪贴板！</div>
 
-  <script src="script.js"></script>
+  <script>
+// ============================================================
+//  ANITI · 次元人格测定系统
+//
+//  TODO 填充清单：
+//    1. TYPES 中每个类型的 desc（人格描述段落）
+//    2. TYPES 中每个类型的 traits（特征标签数组）
+//    3. images/ 目录下放入对应人格图片，更新 image 路径
+//    4. 可继续增加 QUESTIONS 题目或调整 scores 权重
+// ============================================================
+
+/* ── 人格类型定义 ── */
+const TYPES = {
+  TSUN: {
+    code: "TSUN", name: "傲娇型",
+    tagline: "「才、才不是为了你！」",
+    color: "#f472b6",
+    emoji: "🌸",
+    image: "images/tsun.png",   // TODO: 换成真实图片
+    desc: "TODO：填写傲娇型人格描述。嘴硬心软、死不认错、关键时刻挺身而出……",
+    traits: ["嘴硬心软", "死不认错", "耳朵会变红", "其实很在意你"],
+    compatible: "HERO", incompatible: "DEMON",
+  },
+  YAND: {
+    code: "YAND", name: "病娇型",
+    tagline: "「我会永远守护你的……」",
+    color: "#c084fc",
+    emoji: "🔪",
+    image: "images/yand.png",   // TODO
+    desc: "TODO：填写病娇型人格描述。执着、深情、偏执，爱起来没有边界……",
+    traits: ["极度执着", "占有欲强", "表面温柔", "笑容背后有刀"],
+    compatible: "TSUN", incompatible: "HERO",
+  },
+  HERO: {
+    code: "HERO", name: "热血勇者型",
+    tagline: "「我绝对不会放弃！」",
+    color: "#f97316",
+    emoji: "⚔️",
+    image: "images/hero.png",   // TODO
+    desc: "TODO：填写热血勇者型人格描述。冲劲十足、永不放弃、脑子不够肌肉来凑……",
+    traits: ["永不言弃", "天生领袖", "冲动行事", "感染力超强"],
+    compatible: "SAGE", incompatible: "DEMON",
+  },
+  DEMON: {
+    code: "DEMON", name: "魔王系",
+    tagline: "「跪下。」",
+    color: "#ef4444",
+    emoji: "👑",
+    image: "images/demon.png",  // TODO
+    desc: "TODO：填写魔王系人格描述。支配欲强、城府极深、从不轻易暴露真实情感……",
+    traits: ["掌控全局", "极度理性", "话少但准", "笑起来让人不安"],
+    compatible: "SAGE", incompatible: "HERO",
+  },
+  OTAKU: {
+    code: "OTAKU", name: "次元宅型",
+    tagline: "「二次元才是永远的家。」",
+    color: "#38bdf8",
+    emoji: "🎮",
+    image: "images/otaku.png",  // TODO
+    desc: "TODO：填写次元宅型人格描述。活在二次元、对现实世界冷感、但在自己领域是神……",
+    traits: ["番剧百科全书", "社交能量为零", "独处超舒适", "waifu才是真爱"],
+    compatible: "YAND", incompatible: "HERO",
+  },
+  SAGE: {
+    code: "SAGE", name: "贤者型",
+    tagline: "「一切皆有因果。」",
+    color: "#34d399",
+    emoji: "📚",
+    image: "images/sage.png",   // TODO
+    desc: "TODO：填写贤者型人格描述。冷静睿智、看透一切但懒得说、是队伍真正的大脑……",
+    traits: ["逻辑清晰", "话不多但必中", "淡然处世", "其实啥都知道"],
+    compatible: "DEMON", incompatible: "OTAKU",
+  },
+};
+
+/* ── 题目列表 ── */
+const QUESTIONS = [
+  {
+    text: "假期的第一天，你最可能在做什么？",
+    options: [
+      { text: "窝在家里刷番 / 打游戏，手机静音", scores: { OTAKU: 3, YAND: 1 } },
+      { text: "策划一场说走就走的冒险", scores: { HERO: 3, TSUN: 1 } },
+      { text: "泡咖啡馆，独自看书或思考人生", scores: { SAGE: 3, DEMON: 1 } },
+      { text: "约朋友出来，不管干什么都行", scores: { TSUN: 2, HERO: 1, YAND: 1 } },
+    ],
+  },
+  {
+    text: "你被错怪了，你的第一反应是？",
+    options: [
+      { text: "冷哼一声转身离开，等你自己想清楚", scores: { TSUN: 3, DEMON: 1 } },
+      { text: "当场澄清，义正言辞绝不退让", scores: { HERO: 3, SAGE: 1 } },
+      { text: "默默记下来，但不会当场说出口", scores: { YAND: 2, DEMON: 2 } },
+      { text: "回家发条抽象发言，没人能看懂什么意思", scores: { OTAKU: 3, SAGE: 1 } },
+    ],
+  },
+  {
+    text: "你喜欢的人跟别人走近了，你会？",
+    options: [
+      { text: "死命控制表情，但耳朵已经红透了", scores: { TSUN: 4 } },
+      { text: "开始调查那个人的一切背景", scores: { YAND: 4 } },
+      { text: "正面决斗（字面意义上）", scores: { HERO: 3, DEMON: 1 } },
+      { text: "在脑内演完全剧情，然后啃键盘", scores: { OTAKU: 3, SAGE: 1 } },
+    ],
+  },
+  {
+    text: "你的朋友对你的评价最可能是？",
+    options: [
+      { text: "嘴硬心软，但就是不肯承认", scores: { TSUN: 4 } },
+      { text: "对朋友超级好，但感觉有点执着", scores: { YAND: 3, SAGE: 1 } },
+      { text: "冲动，但是绝不抛弃队友", scores: { HERO: 3, TSUN: 1 } },
+      { text: "神秘，说话总让人猜不透", scores: { DEMON: 3, SAGE: 1 } },
+    ],
+  },
+  {
+    text: "在一场团队任务中，你扮演的角色是？",
+    options: [
+      { text: "嘴上说"随便"，但其实全程带着大家冲", scores: { TSUN: 3, HERO: 1 } },
+      { text: "前锋，永远冲在最前面", scores: { HERO: 4 } },
+      { text: "军师，在后方掌控全局", scores: { DEMON: 3, SAGE: 1 } },
+      { text: "后勤，默默处理所有细节，不求表扬", scores: { YAND: 2, OTAKU: 2 } },
+    ],
+  },
+  {
+    text: "深夜 12 点，你通常在做什么？",
+    options: [
+      { text: "刷动漫 / 看小说，已经忘了睡觉这件事", scores: { OTAKU: 4 } },
+      { text: "一个人发呆，思考宇宙和人生意义", scores: { SAGE: 3, DEMON: 1 } },
+      { text: "盯着手机，不知道在等谁的消息", scores: { YAND: 3, TSUN: 1 } },
+      { text: "已经睡着了，明天还要去冒险", scores: { HERO: 4 } },
+    ],
+  },
+  {
+    text: "如果你是动漫里的角色，你的能力类型是？",
+    options: [
+      { text: "肉体强化系，硬打硬扛，越战越勇", scores: { HERO: 4 } },
+      { text: "控制系，操控他人的心理和行为", scores: { YAND: 2, DEMON: 2 } },
+      { text: "结界 / 防御系，默默保护所有人", scores: { TSUN: 2, SAGE: 2 } },
+      { text: "知识 / 道具系，靠智慧解决一切", scores: { OTAKU: 2, SAGE: 2 } },
+    ],
+  },
+  {
+    text: "别人问你"你还好吗"，你的回答是？",
+    options: [
+      { text: "好的好的，没事（其实有事）", scores: { TSUN: 3, OTAKU: 1 } },
+      { text: "我很好，你好就好。（意味深长）", scores: { YAND: 3, DEMON: 1 } },
+      { text: "不好！然后详细说出所有问题", scores: { HERO: 3, SAGE: 1 } },
+      { text: "沉默三秒，然后反问你", scores: { DEMON: 2, SAGE: 2 } },
+    ],
+  },
+  {
+    text: "你对"命运"这个概念的态度是？",
+    options: [
+      { text: "命运？我会亲手改写它", scores: { HERO: 4 } },
+      { text: "命运早已注定，但我是唯一的变量", scores: { DEMON: 3, SAGE: 1 } },
+      { text: "只要我们在一起，什么命运都无所谓", scores: { YAND: 3, TSUN: 1 } },
+      { text: "命运论……这个设定在二次元里确实很常见", scores: { OTAKU: 3, SAGE: 1 } },
+    ],
+  },
+  {
+    text: "被人当众夸了，你会？",
+    options: [
+      { text: "脸红 + 否认：「才、才没有那么好啦！」", scores: { TSUN: 4 } },
+      { text: "微微一笑，从容接受", scores: { DEMON: 3, SAGE: 1 } },
+      { text: "立刻燃起斗志，要变得更强", scores: { HERO: 3, TSUN: 1 } },
+      { text: "感动两秒，然后把对话截图保存", scores: { YAND: 3, OTAKU: 1 } },
+    ],
+  },
+  {
+    text: "有人突然对你很好，你的第一反应是？",
+    options: [
+      { text: "警惕——他想干什么？", scores: { DEMON: 2, YAND: 2 } },
+      { text: "窃喜，但表面装作淡定", scores: { TSUN: 4 } },
+      { text: "直接问：你为什么对我好？", scores: { HERO: 3, SAGE: 1 } },
+      { text: "感动，开始思考这是不是 flag", scores: { OTAKU: 3, YAND: 1 } },
+    ],
+  },
+  {
+    text: "你觉得你在动漫里大概是什么定位？",
+    options: [
+      { text: "嘴硬的主角挚友，关键时刻挺身而出", scores: { TSUN: 3, HERO: 1 } },
+      { text: "主角，开挂的那种", scores: { HERO: 3, DEMON: 1 } },
+      { text: "幕后大 boss，从一开始就在下棋", scores: { DEMON: 3, SAGE: 1 } },
+      { text: "不重要的配角，但有一幕高光让全网哭了", scores: { OTAKU: 2, YAND: 2 } },
+    ],
+  },
+  {
+    text: "你理想中的结局是？",
+    options: [
+      { text: "和最重要的人在一起，平凡但幸福", scores: { TSUN: 2, YAND: 2 } },
+      { text: "完成使命，哪怕一个人", scores: { HERO: 2, DEMON: 2 } },
+      { text: "在书海 / 二次元里永远不出来", scores: { OTAKU: 4 } },
+      { text: "留下能被后人记住的东西", scores: { SAGE: 3, DEMON: 1 } },
+    ],
+  },
+  {
+    text: "你最受不了哪种人？",
+    options: [
+      { text: "优柔寡断，永远做不了决定的人", scores: { HERO: 2, DEMON: 2 } },
+      { text: "没有边界感，什么都往外说的人", scores: { YAND: 2, DEMON: 2 } },
+      { text: "不看动漫的普通人（直视）", scores: { OTAKU: 4 } },
+      { text: "道貌岸然，表里不一的人", scores: { TSUN: 1, HERO: 1, SAGE: 2 } },
+    ],
+  },
+  {
+    text: "最后一题：你觉得自己最像哪句话？",
+    options: [
+      { text: "「别误会，我只是路过。」（但其实很在乎）", scores: { TSUN: 4 } },
+      { text: "「只有我才能守护你。」", scores: { YAND: 4 } },
+      { text: "「谁也别想拦我。」", scores: { HERO: 3, DEMON: 1 } },
+      { text: "「有趣。」（然后沉默）", scores: { DEMON: 2, SAGE: 2 } },
+    ],
+  },
+];
+
+/* ── 状态 ── */
+let currentIndex = 0;
+let scores = {};
+
+/* ── 工具函数 ── */
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+function resetScores() {
+  scores = {};
+  Object.keys(TYPES).forEach(k => { scores[k] = 0; });
+}
+
+function calcResult() {
+  return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+}
+
+/* ── 渲染题目 ── */
+function renderQuestion(index) {
+  const q = QUESTIONS[index];
+  const total = QUESTIONS.length;
+
+  document.getElementById("progress-fill").style.width = (index / total * 100) + "%";
+  document.getElementById("q-index").textContent = "第 " + (index + 1) + " 题";
+  document.getElementById("q-total").textContent = "/ 共 " + total + " 题";
+  document.getElementById("question-text").textContent = q.text;
+
+  const grid = document.getElementById("options-grid");
+  grid.innerHTML = "";
+  delete grid.dataset.locked;
+
+  q.options.forEach(function(opt) {
+    const btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.innerHTML = "<span>" + opt.text + "</span>";
+    btn.addEventListener("click", function() { selectOption(btn, opt.scores); });
+    grid.appendChild(btn);
+  });
+}
+
+/* ── 选择选项 ── */
+function selectOption(btn, optScores) {
+  const grid = document.getElementById("options-grid");
+  if (grid.dataset.locked) return;
+  grid.dataset.locked = "1";
+
+  btn.classList.add("selected");
+
+  Object.entries(optScores).forEach(function(entry) {
+    scores[entry[0]] = (scores[entry[0]] || 0) + entry[1];
+  });
+
+  setTimeout(function() {
+    currentIndex++;
+    if (currentIndex < QUESTIONS.length) {
+      renderQuestion(currentIndex);
+    } else {
+      showResult();
+    }
+  }, 320);
+}
+
+/* ── 显示结果 ── */
+function showResult() {
+  document.getElementById("progress-fill").style.width = "100%";
+
+  const key = calcResult();
+  const t = TYPES[key];
+
+  document.getElementById("result-code").textContent = t.code;
+  document.getElementById("result-code").style.color = t.color;
+  document.getElementById("result-name").textContent = t.name;
+  document.getElementById("result-tagline").textContent = t.tagline;
+  document.getElementById("result-desc").textContent = t.desc;
+  document.getElementById("result-desc").style.borderLeftColor = t.color;
+  document.getElementById("result-emoji").textContent = t.emoji;
+  document.getElementById("compat-good").textContent = t.compatible;
+  document.getElementById("compat-bad").textContent = t.incompatible;
+
+  const card = document.getElementById("result-card");
+  card.style.borderColor = t.color + "40";
+
+  const traitsEl = document.getElementById("result-traits");
+  traitsEl.innerHTML = "";
+  t.traits.forEach(function(tr) {
+    const chip = document.createElement("span");
+    chip.className = "trait-chip";
+    chip.textContent = tr;
+    chip.style.color = t.color;
+    chip.style.background = t.color + "1a";
+    chip.style.border = "1px solid " + t.color + "40";
+    traitsEl.appendChild(chip);
+  });
+
+  // 尝试加载图片
+  const slot = document.getElementById("result-image-slot");
+  if (t.image) {
+    const img = new Image();
+    img.onload = function() {
+      slot.innerHTML = "";
+      slot.appendChild(img);
+    };
+    img.src = t.image;
+  }
+
+  showScreen("screen-result");
+}
+
+/* ── 对外接口 ── */
+var App = {
+  start: function() {
+    currentIndex = 0;
+    resetScores();
+    renderQuestion(0);
+    showScreen("screen-question");
+  },
+  retry: function() { App.start(); },
+  share: function() {
+    const key = calcResult();
+    const t = TYPES[key];
+    const text = "【次元人格测定 · ANITI】\n我的人格类型是：" + t.code + " " + t.name + "\n" + t.tagline + "\n\n快来测测你是哪种次元属性！";
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showToast).catch(function() { alert(text); });
+    } else {
+      alert(text);
+    }
+  },
+};
+
+function showToast() {
+  var toast = document.getElementById("toast");
+  toast.classList.add("show");
+  setTimeout(function() { toast.classList.remove("show"); }, 2200);
+}
+  </script>
 </body>
 </html>
