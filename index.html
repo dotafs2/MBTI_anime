@@ -632,6 +632,20 @@ const TYPES = {
     desc: "你被感情驱动，但你的感情像水一样——流向哪里取决于地势，而不是你的意志。你不会主动伤害任何人，但你的优柔寡断本身就是最深的伤害。你喜欢被喜欢的感觉，胜过真正喜欢某一个人。有一艘船在等你，你还不知道。",
     tags: ["优柔寡断", "渣男天赋", "死亡flag满载", "Nice Boat", "不是坏人但结果一样"],
   },
+  EREN: {
+    code: "EREN",
+    name: "艾伦·耶格尔",
+    series: "进击的巨人",
+    tagline: "「我一直都是这样——向前冲，不管结果如何。」",
+    color: "#16a34a",
+    emoji: "🗡️",
+    image: "images/eren.png",
+    rarity: "5.3%", rarityLabel: "rare",
+    stats: { danger: 5, love: 3, chuuni: 4, survival: 1, dark: 5 },
+    soulQuote: "你渴望的不是胜利，不是复仇——是自由。但你从没想清楚：自由的尽头，是什么。",
+    desc: "你从小就知道自己想要什么——打破那堵墙，去看墙外的世界。这份执念驱动着你前进，也一点一点把你变成了别的什么。你爱过那些人，你也亲手毁掉了他们的世界。你不是没有选择，你是选择了最彻底的那一条路。地鸣启动的那一刻，你比任何人都清楚——再也回不去了。",
+    tags: ["自由意志", "执念", "地鸣", "从英雄到屠夫", "我一直都是这样"],
+  },
 };
 
 /* ── 题目列表 ── */
@@ -642,7 +656,7 @@ const QUESTIONS = [
       { text: "先毁灭，再以神的身份重建一个新秩序", scores: { DIO: 4 } },
       { text: "用它来守护每一个无辜之人", scores: { SABER: 4 } },
       { text: "不管什么力量，只要能保护那个人就够了", scores: { FEIYANYANG: 4 } },
-      { text: "管那么多干嘛，先看看有没有喜欢的人比较重要", scores: { MAKOTO: 4 } },
+      { text: "用它打倒所有威胁我们自由的东西——不管要走多远", scores: { EREN: 4 } },
     ],
   },
   {
@@ -650,7 +664,7 @@ const QUESTIONS = [
     options: [
       { text: "从一开始就没有信任过任何人", scores: { DIO: 4 } },
       { text: "痛苦，但正面面对，重审自己的判断", scores: { SABER: 4 } },
-      { text: "背叛意味着彻底清除", scores: { DIO: 3 } },
+      { text: "从那一刻起，我就知道——有些事必须由我来做", scores: { EREN: 4 } },
       { text: "尴尬……但说实话我最近也喜欢上别人了", scores: { MAKOTO: 4 } },
     ],
   },
@@ -660,7 +674,7 @@ const QUESTIONS = [
       { text: "冲上去，正义不需要理由", scores: { SABER: 3, FEIYANYANG: 1 } },
       { text: "弱者被淘汰，这不是自然法则吗", scores: { DIO: 4 } },
       { text: "如果被欺负的是我在意的人，对方会消失", scores: { FEIYANYANG: 4 } },
-      { text: "默默走开，不想惹麻烦", scores: { MAKOTO: 3, DIO: 1 } },
+      { text: "冲上去——哪怕对方是巨人", scores: { EREN: 4 } },
     ],
   },
   {
@@ -669,7 +683,7 @@ const QUESTIONS = [
       { text: "按内心的原则和誓言，即使不利于自己", scores: { SABER: 4 } },
       { text: "对自己最有利的选择，永远如此", scores: { DIO: 4 } },
       { text: "那个人喜欢什么，我就做什么", scores: { FEIYANYANG: 4 } },
-      { text: "随心所欲，今天开心最重要，明天的事明天再说", scores: { MAKOTO: 4 } },
+      { text: "打倒所有敌人，哪怕代价是一切", scores: { EREN: 4 } },
     ],
   },
   {
@@ -678,7 +692,7 @@ const QUESTIONS = [
       { text: "孤独是王者的命运，我承担", scores: { SABER: 3, DIO: 1 } },
       { text: "孤独？我不需要任何人", scores: { DIO: 4 } },
       { text: "只要那个人在身边，孤独跟我没关系", scores: { FEIYANYANG: 4 } },
-      { text: "找下一个喜欢我的人就好了", scores: { MAKOTO: 4 } },
+      { text: "只要自由还在，孤独又算什么", scores: { EREN: 4 } },
     ],
   },
   {
@@ -686,7 +700,7 @@ const QUESTIONS = [
     options: [
       { text: "站起来，再站起来，直到赢为止", scores: { SABER: 3, FEIYANYANG: 2 } },
       { text: "输？这个字不在我的词典里。（使用隐藏底牌）", scores: { DIO: 4 } },
-      { text: "假装没事，找个借口先溜了", scores: { MAKOTO: 4 } },
+      { text: "变身。继续打。没有退路这个选项", scores: { EREN: 4 } },
       { text: "那个人还在看着我，不能倒下！", scores: { FEIYANYANG: 4 } },
     ],
   },
@@ -696,7 +710,7 @@ const QUESTIONS = [
       { text: "我有没有真正守护到该守护的人", scores: { SABER: 4 } },
       { text: "明天的计划，以及谁该被清除出局", scores: { DIO: 4 } },
       { text: "那个人现在在干嘛，有没有想我", scores: { FEIYANYANG: 4 } },
-      { text: "想着好像有两个人在等我消息……", scores: { MAKOTO: 4 } },
+      { text: "这条路还剩多远。走完它，就结束了", scores: { EREN: 4 } },
     ],
   },
   {
@@ -705,7 +719,7 @@ const QUESTIONS = [
       { text: "信念是我的力量源泉，不是弱点", scores: { SABER: 4 } },
       { text: "一个人可以没有感情，不能没有力量", scores: { DIO: 4 } },
       { text: "我的信念就是保护那个人，这是累赘吗？", scores: { FEIYANYANG: 4 } },
-      { text: "对……执着感觉挺累的，算了", scores: { MAKOTO: 4 } },
+      { text: "我别无选择——从看见那个记忆的瞬间就没有了", scores: { EREN: 4 } },
     ],
   },
   {
@@ -714,7 +728,7 @@ const QUESTIONS = [
       { text: "还不够强，继续进化", scores: { DIO: 3, SABER: 1 } },
       { text: "没有完成誓言之前，我不评价自己", scores: { SABER: 4 } },
       { text: "我就是标准，不需要外部评价", scores: { DIO: 4 } },
-      { text: "还行吧，好像挺多人喜欢我的", scores: { MAKOTO: 4 } },
+      { text: "还不够。在终点到来之前，永远不够", scores: { EREN: 4 } },
     ],
   },
   {
@@ -723,14 +737,14 @@ const QUESTIONS = [
       { text: "微笑着记住这个人的名字。他会后悔的", scores: { DIO: 4 } },
       { text: "不作声色，把这当作驱动自己的燃料", scores: { SABER: 3, DIO: 1 } },
       { text: "无所谓，只要那个人不嘲笑我就行", scores: { FEIYANYANG: 4 } },
-      { text: "躲开就完了，犯不着", scores: { MAKOTO: 4 } },
+      { text: "记住他的脸。总有一天轮到我", scores: { EREN: 3, DIO: 1 } },
     ],
   },
   {
     text: "你心目中「胜利」的定义是？",
     options: [
       { text: "堂堂正正地赢，才是真正的胜利", scores: { SABER: 4 } },
-      { text: "赢不赢无所谓，不要让气氛太难看就行", scores: { MAKOTO: 4 } },
+      { text: "向前——只要还能动就继续向前", scores: { EREN: 4 } },
       { text: "把对手踩在脚下，永远无法翻身", scores: { DIO: 4 } },
       { text: "在那个人面前证明自己，就是胜利", scores: { FEIYANYANG: 4 } },
     ],
@@ -740,7 +754,7 @@ const QUESTIONS = [
     options: [
       { text: "作为守护者，永远站在人们面前", scores: { SABER: 4 } },
       { text: "作为绝对的王，让历史铭记恐惧", scores: { DIO: 4 } },
-      { text: "不想被记住……低调点比较好", scores: { MAKOTO: 4 } },
+      { text: "被记住还是被诅咒，都无所谓——只要目的达成了", scores: { EREN: 4 } },
       { text: "被那个人记住就够了，其他不重要", scores: { FEIYANYANG: 4 } },
     ],
   },
@@ -750,7 +764,7 @@ const QUESTIONS = [
       { text: "无论何时都不可逾越的底线", scores: { SABER: 4 } },
       { text: "强者给弱者设置的枷锁", scores: { DIO: 4 } },
       { text: "我就是规则", scores: { DIO: 3, SABER: 1 } },
-      { text: "我没做什么坏事，只是顺其自然而已", scores: { MAKOTO: 4 } },
+      { text: "这个世界本来就是这样——弱肉强食，墙内墙外", scores: { EREN: 3, DIO: 1 } },
     ],
   },
   {
@@ -758,7 +772,7 @@ const QUESTIONS = [
     options: [
       { text: "尊重对方的选择，克制自己的感情", scores: { SABER: 4 } },
       { text: "把竞争对手从棋盘上抹掉", scores: { DIO: 3 } },
-      { text: "没关系，旁边还有人喜欢我", scores: { MAKOTO: 4 } },
+      { text: "……我知道。但这条路我一个人走完", scores: { EREN: 4 } },
       { text: "将此化为支配欲，把所有变量都清除", scores: { DIO: 4 } },
     ],
   },
@@ -767,7 +781,7 @@ const QUESTIONS = [
     options: [
       { text: "「即使没有人看见，我也会做正确的事。」", scores: { SABER: 4 } },
       { text: "「这个世界，终将是我的。」", scores: { DIO: 4 } },
-      { text: "「我只是……还没想清楚而已。」", scores: { MAKOTO: 4 } },
+      { text: "「我一直都是这样——向前冲，不管结果如何。」", scores: { EREN: 4 } },
       { text: "「为了那个人，我什么都能做到！」", scores: { FEIYANYANG: 4 } },
     ],
   },
