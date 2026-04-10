@@ -910,6 +910,7 @@ function showResult() {
   };
   img.src = t.image;
 
+  localStorage.setItem("aniti_result", key);
   showScreen("screen-result");
 }
 
@@ -921,7 +922,10 @@ var App = {
     renderQuestion(0);
     showScreen("screen-question");
   },
-  retry: function() { App.start(); },
+  retry: function() {
+    localStorage.removeItem("aniti_result");
+    App.start();
+  },
   share: function() {
     var key = calcResult();
     var t = TYPES[key];
@@ -930,7 +934,7 @@ var App = {
       t.tagline + "\n\n" +
       "// " + t.soulQuote + "\n\n" +
       "稀有度：" + t.rarity + "（" + t.rarityLabel.toUpperCase() + "）\n" +
-      "危险指数：" + Array(t.dangerLevel + 1).join("█") + Array(6 - t.dangerLevel).join("░") + "\n\n" +
+      "危险指数：" + Array(t.stats.danger + 1).join("█") + Array(6 - t.stats.danger).join("░") + "\n\n" +
       "你是哪个角色？\nhttps://mbtianime.com";
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(showToast).catch(function() { alert(text); });
@@ -945,6 +949,17 @@ function showToast() {
   toast.classList.add("show");
   setTimeout(function() { toast.classList.remove("show"); }, 2200);
 }
+
+/* ── 页面加载时恢复上次结果 ── */
+(function() {
+  var saved = localStorage.getItem("aniti_result");
+  if (saved && TYPES[saved]) {
+    scores = {};
+    Object.keys(TYPES).forEach(function(k) { scores[k] = 0; });
+    scores[saved] = 99;
+    showResult();
+  }
+})();
   </script>
 </body>
 </html>
