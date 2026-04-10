@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>次元人格测定 | ANITI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========== LANDING ========== -->
+  <div id="screen-landing" class="screen active">
+    <div class="landing-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="landing-content">
+      <div class="badge">ANITI · 次元人格测定系统 v1.0</div>
+      <h1 class="main-title">你是哪种<br/><span class="title-highlight">次元人格</span>？</h1>
+      <p class="main-desc">
+        15 道题，测出你的真实二次元属性。<br/>
+        你究竟是傲娇、魔王、勇者、还是彻底的宅？
+      </p>
+      <button class="btn-primary" onclick="App.start()">开始测定</button>
+      <p class="disclaimer">本测试仅供娱乐 · 请勿对号入座 · 如有雷同请检举你的朋友</p>
+    </div>
+  </div>
+
+  <!-- ========== QUESTION ========== -->
+  <div id="screen-question" class="screen">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="question-wrap">
+      <div class="question-meta">
+        <span id="q-index">第 1 题</span>
+        <span id="q-total">/ 共 15 题</span>
+      </div>
+      <p class="question-text" id="question-text"></p>
+      <div class="options-grid" id="options-grid"></div>
+    </div>
+  </div>
+
+  <!-- ========== RESULT ========== -->
+  <div id="screen-result" class="screen">
+    <div class="result-card" id="result-card">
+      <div class="result-header">
+        <div class="result-code" id="result-code">TSUN</div>
+        <div class="result-name" id="result-name">傲娇型</div>
+        <div class="result-tagline" id="result-tagline">"才、才不是为了你！"</div>
+      </div>
+      <div class="result-image-slot" id="result-image-slot">
+        <!-- 图片占位 -->
+        <div class="img-placeholder">
+          <span id="result-emoji">🌸</span>
+          <small>图片施工中</small>
+        </div>
+      </div>
+      <div class="result-desc" id="result-desc"></div>
+      <div class="result-traits" id="result-traits"></div>
+      <div class="result-compat">
+        <div class="compat-item">
+          <span class="compat-label">契合</span>
+          <span class="compat-val" id="compat-good"></span>
+        </div>
+        <div class="compat-item">
+          <span class="compat-label">相克</span>
+          <span class="compat-val" id="compat-bad"></span>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-primary" onclick="App.share()">复制结果分享</button>
+        <button class="btn-secondary" onclick="App.retry()">再测一次</button>
+      </div>
+      <p class="result-disclaimer">本测试仅供娱乐 · 不作为任何诊断依据</p>
+    </div>
+  </div>
+
+  <!-- ========== TOAST ========== -->
+  <div id="toast" class="toast">已复制到剪贴板！</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
