@@ -979,8 +979,27 @@ function resetScores() {
   Object.keys(TYPES).forEach(function(k) { scores[k] = 0; });
 }
 
+function calcMaxPossible() {
+  var maxP = {};
+  Object.keys(TYPES).forEach(function(k) { maxP[k] = 0; });
+  QUESTIONS.forEach(function(q) {
+    Object.keys(TYPES).forEach(function(k) {
+      var best = 0;
+      q.options.forEach(function(opt) { if ((opt.scores[k] || 0) > best) best = opt.scores[k] || 0; });
+      maxP[k] = (maxP[k] || 0) + best;
+    });
+  });
+  return maxP;
+}
+
 function calcResult() {
-  return Object.entries(scores).sort(function(a, b) { return b[1] - a[1]; })[0][0];
+  var maxP = calcMaxPossible();
+  // 用归一化比率比较，确保各角色出现概率均等
+  return Object.entries(scores).sort(function(a, b) {
+    var ra = maxP[a[0]] > 0 ? a[1] / maxP[a[0]] : 0;
+    var rb = maxP[b[0]] > 0 ? b[1] / maxP[b[0]] : 0;
+    return rb - ra;
+  })[0][0];
 }
 
 /* ── 渲染题目 ── */
@@ -1049,23 +1068,7 @@ function showResult() {
   document.getElementById("result-tagline").textContent = t.tagline;
 
   // 计算相似度：用户得分 / 该角色最高可能得分
-  var maxPossible = {};
-  Object.keys(TYPES).forEach(function(k) { maxPossible[k] = 0; });
-  QUESTIONS.forEach(function(q) {
-    q.options.forEach(function(opt) {
-      Object.entries(opt.scores).forEach(function(e) {
-        if ((opt.scores[e[0]] || 0) > (maxPossible[e[0]] || 0)) {
-          // We want the max score available per question per character
-        }
-      });
-    });
-    // For each character, find the max score available in this question
-    Object.keys(TYPES).forEach(function(k) {
-      var best = 0;
-      q.options.forEach(function(opt) { if ((opt.scores[k] || 0) > best) best = opt.scores[k] || 0; });
-      maxPossible[k] = (maxPossible[k] || 0) + best;
-    });
-  });
+  var maxPossible = calcMaxPossible();
   var simPct = maxPossible[key] > 0 ? Math.round((scores[key] / maxPossible[key]) * 100) : 0;
   var simEl = document.getElementById("result-similarity");
   simEl.textContent = "与" + t.name + "的契合度 " + simPct + "%";
