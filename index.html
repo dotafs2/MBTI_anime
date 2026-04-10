@@ -510,14 +510,14 @@ const TYPES = {
     traits: ["永不言弃", "天生领袖", "冲动行事", "感染力超强"],
     compatible: "SAGE", incompatible: "DEMON",
   },
-  DEMON: {
-    code: "DEMON", name: "魔王系",
-    tagline: "「跪下。」",
-    color: "#ef4444",
-    emoji: "👑",
-    image: "images/demon.png",  // TODO
-    desc: "TODO：填写魔王系人格描述。支配欲强、城府极深、从不轻易暴露真实情感……",
-    traits: ["掌控全局", "极度理性", "话少但准", "笑起来让人不安"],
+  DIO: {
+    code: "DIO", name: "DIO型",
+    tagline: "「このDIOだ！」",
+    color: "#efbf04",
+    emoji: "🧛",
+    image: "images/dio.png",   // TODO: DIO character illustration
+    desc: "你站在世界的顶端俯视众生。对你而言，他人不过是棋子，规则不过是建议。你拥有绝对的自信和支配欲，不屑于解释自己的行为——因为你就是标准。当别人还在犹豫的时候，你已经在时间停止的世界里走完了全程。",
+    traits: ["绝对支配", "蔑视规则", "时停级城府", "WRYYYYY", "不屑解释"],
     compatible: "SAGE", incompatible: "HERO",
   },
   OTAKU: {
@@ -544,139 +544,154 @@ const TYPES = {
 
 /* ── 题目列表 ── */
 const QUESTIONS = [
+  // ── Q1: 世界观 ──
   {
-    text: "假期的第一天，你最可能在做什么？",
+    text: "如果你获得了毁灭世界的力量，你会？",
     options: [
-      { text: "窝在家里刷番 / 打游戏，手机静音", scores: { OTAKU: 3, YAND: 1 } },
-      { text: "策划一场说走就走的冒险", scores: { HERO: 3, TSUN: 1 } },
-      { text: "泡咖啡馆，独自看书或思考人生", scores: { SAGE: 3, DEMON: 1 } },
-      { text: "约朋友出来，不管干什么都行", scores: { TSUN: 2, HERO: 1, YAND: 1 } },
+      { text: "毁灭？太麻烦了，我继续看番", scores: { OTAKU: 4 } },
+      { text: "当然是拯救世界，这不是主角该做的吗", scores: { HERO: 4 } },
+      { text: "先毁灭，再以神的身份重建", scores: { DIO: 4 } },
+      { text: "研究一下这个力量的原理再说", scores: { SAGE: 3, DIO: 1 } },
     ],
   },
+  // ── Q2: 背叛 ──
   {
-    text: "你被错怪了，你的第一反应是？",
+    text: "你最信任的人背叛了你，你会？",
     options: [
-      { text: "冷哼一声转身离开，等你自己想清楚", scores: { TSUN: 3, DEMON: 1 } },
-      { text: "当场澄清，义正言辞绝不退让", scores: { HERO: 3, SAGE: 1 } },
-      { text: "默默记下来，但不会当场说出口", scores: { YAND: 2, DEMON: 2 } },
-      { text: "回家发条抽象发言，没人能看懂什么意思", scores: { OTAKU: 3, SAGE: 1 } },
+      { text: "表面冷笑，回家偷偷哭一整晚", scores: { TSUN: 4 } },
+      { text: "没关系，我从一开始就没信任过任何人", scores: { DIO: 3, SAGE: 1 } },
+      { text: "追上去质问，然后打一架", scores: { HERO: 4 } },
+      { text: "我不会让你有背叛的机会（微笑）", scores: { YAND: 4 } },
     ],
   },
+  // ── Q3: 对弱者态度 ──
   {
-    text: "你喜欢的人跟别人走近了，你会？",
+    text: "路上看到有人被欺负，你的真实反应是？",
     options: [
-      { text: "死命控制表情，但耳朵已经红透了", scores: { TSUN: 4 } },
-      { text: "开始调查那个人的一切背景", scores: { YAND: 4 } },
-      { text: "正面决斗（字面意义上）", scores: { HERO: 3, DEMON: 1 } },
-      { text: "在脑内演完全剧情，然后啃键盘", scores: { OTAKU: 3, SAGE: 1 } },
+      { text: "冲上去，正义是不需要理由的", scores: { HERO: 4 } },
+      { text: "弱者被淘汰，这不是自然法则吗", scores: { DIO: 3, SAGE: 1 } },
+      { text: "戴上耳机假装没看见……好吧，最后还是偷偷报了警", scores: { TSUN: 3, OTAKU: 1 } },
+      { text: "如果那个人是我在乎的人，施暴者会消失", scores: { YAND: 4 } },
     ],
   },
+  // ── Q4: 权力 ──
   {
-    text: "你的朋友对你的评价最可能是？",
+    text: "你突然成为一个国家的独裁者，第一件事做什么？",
     options: [
-      { text: "嘴硬心软，但就是不肯承认", scores: { TSUN: 4 } },
-      { text: "对朋友超级好，但感觉有点执着", scores: { YAND: 3, SAGE: 1 } },
-      { text: "冲动，但是绝不抛弃队友", scores: { HERO: 3, TSUN: 1 } },
-      { text: "神秘，说话总让人猜不透", scores: { DEMON: 3, SAGE: 1 } },
+      { text: "废除所有不合理的制度，还权于民", scores: { HERO: 3, SAGE: 1 } },
+      { text: "全国强制播放动漫，取消996", scores: { OTAKU: 4 } },
+      { text: "建立完美的监控体系，没人能背叛我", scores: { YAND: 3, DIO: 1 } },
+      { text: "不急，先让所有人跪下叫我陛下", scores: { DIO: 4 } },
     ],
   },
+  // ── Q5: 死亡 ──
   {
-    text: "在一场团队任务中，你扮演的角色是？",
+    text: "如果你知道自己明天就要死了，今晚做什么？",
     options: [
-      { text: "嘴上说「随便」，但其实全程带着大家冲", scores: { TSUN: 3, HERO: 1 } },
-      { text: "前锋，永远冲在最前面", scores: { HERO: 4 } },
-      { text: "军师，在后方掌控全局", scores: { DEMON: 3, SAGE: 1 } },
-      { text: "后勤，默默处理所有细节，不求表扬", scores: { YAND: 2, OTAKU: 2 } },
+      { text: "把想说的话全部说出来——然后，才不是因为怕死呢", scores: { TSUN: 4 } },
+      { text: "和最重要的人待在一起，哪怕只是沉默", scores: { YAND: 3, TSUN: 1 } },
+      { text: "无所谓，真正的王不会被死亡约束", scores: { DIO: 4 } },
+      { text: "把未看完的番看完，死也要死在二次元里", scores: { OTAKU: 3, SAGE: 1 } },
     ],
   },
+  // ── Q6: 杀戮本能 ──
   {
-    text: "深夜 12 点，你通常在做什么？",
+    text: "在大逃杀游戏里，你的生存策略是？",
     options: [
-      { text: "刷动漫 / 看小说，已经忘了睡觉这件事", scores: { OTAKU: 4 } },
-      { text: "一个人发呆，思考宇宙和人生意义", scores: { SAGE: 3, DEMON: 1 } },
-      { text: "盯着手机，不知道在等谁的消息", scores: { YAND: 3, TSUN: 1 } },
-      { text: "已经睡着了，明天还要去冒险", scores: { HERO: 4 } },
+      { text: "躲在角落苟到最后——我可是猥琐发育型选手", scores: { OTAKU: 3, SAGE: 1 } },
+      { text: "正面刚！堂堂正正地赢才爽", scores: { HERO: 4 } },
+      { text: "微笑着和每个人结盟，然后在最后一刻……", scores: { DIO: 3, YAND: 1 } },
+      { text: "找到那个人，确保我们一起活到最后", scores: { YAND: 3, TSUN: 1 } },
     ],
   },
+  // ── Q7: 人际关系 ──
   {
-    text: "如果你是动漫里的角色，你的能力类型是？",
+    text: "你怎么看待「朋友」这个概念？",
     options: [
-      { text: "肉体强化系，硬打硬扛，越战越勇", scores: { HERO: 4 } },
-      { text: "控制系，操控他人的心理和行为", scores: { YAND: 2, DEMON: 2 } },
-      { text: "结界 / 防御系，默默保护所有人", scores: { TSUN: 2, SAGE: 2 } },
-      { text: "知识 / 道具系，靠智慧解决一切", scores: { OTAKU: 2, SAGE: 2 } },
+      { text: "朋友？棋子的另一种说法罢了", scores: { DIO: 4 } },
+      { text: "嘴上说不需要，但其实……别看我", scores: { TSUN: 4 } },
+      { text: "只需要一个就够了，但那个人必须只属于我", scores: { YAND: 4 } },
+      { text: "同伴就是用来并肩作战的！越多越好", scores: { HERO: 3, SAGE: 1 } },
     ],
   },
+  // ── Q8: 真实想法 ──
   {
-    text: "别人问你「你还好吗」，你的回答是？",
+    text: "深夜3点，你脑子里在想什么？",
     options: [
-      { text: "好的好的，没事（其实有事）", scores: { TSUN: 3, OTAKU: 1 } },
-      { text: "我很好，你好就好。（意味深长）", scores: { YAND: 3, DEMON: 1 } },
-      { text: "不好！然后详细说出所有问题", scores: { HERO: 3, SAGE: 1 } },
-      { text: "沉默三秒，然后反问你", scores: { DEMON: 2, SAGE: 2 } },
+      { text: "如果这个世界其实是虚拟的呢……", scores: { SAGE: 3, OTAKU: 1 } },
+      { text: "那个人现在在想我吗？他手机亮了……", scores: { YAND: 3, TSUN: 1 } },
+      { text: "第二天的计划，以及谁该被清除出局", scores: { DIO: 3, SAGE: 1 } },
+      { text: "这集动漫好好看再刷一遍", scores: { OTAKU: 4 } },
     ],
   },
+  // ── Q9: 战斗 ──
   {
-    text: "你对「命运」这个概念的态度是？",
+    text: "在战斗中你快要输了，你会？",
     options: [
-      { text: "命运？我会亲手改写它", scores: { HERO: 4 } },
-      { text: "命运早已注定，但我是唯一的变量", scores: { DEMON: 3, SAGE: 1 } },
-      { text: "只要我们在一起，什么命运都无所谓", scores: { YAND: 3, TSUN: 1 } },
-      { text: "命运论……这个设定在二次元里确实很常见", scores: { OTAKU: 3, SAGE: 1 } },
+      { text: "站起来，再站起来，直到赢为止", scores: { HERO: 4 } },
+      { text: "输？这个字不在我的词典里。（使用隐藏底牌）", scores: { DIO: 4 } },
+      { text: "表面认输，暗中找到对方的弱点等下次", scores: { SAGE: 3, YAND: 1 } },
+      { text: "才、才不会输呢！（实际上已经快哭了）", scores: { TSUN: 4 } },
     ],
   },
+  // ── Q10: 对人类的看法 ──
   {
-    text: "被人当众夸了，你会？",
+    text: "你觉得大多数人类是？",
     options: [
-      { text: "脸红 + 否认：「才、才没有那么好啦！」", scores: { TSUN: 4 } },
-      { text: "微微一笑，从容接受", scores: { DEMON: 3, SAGE: 1 } },
-      { text: "立刻燃起斗志，要变得更强", scores: { HERO: 3, TSUN: 1 } },
-      { text: "感动两秒，然后把对话截图保存", scores: { YAND: 3, OTAKU: 1 } },
+      { text: "虽然愚蠢，但值得被保护", scores: { HERO: 3, TSUN: 1 } },
+      { text: "蝼蚁而已", scores: { DIO: 4 } },
+      { text: "有趣的研究对象", scores: { SAGE: 3, OTAKU: 1 } },
+      { text: "无所谓，反正我只在乎一个人", scores: { YAND: 3, TSUN: 1 } },
     ],
   },
+  // ── Q11: 被当众羞辱 ──
   {
-    text: "有人突然对你很好，你的第一反应是？",
+    text: "有人在众人面前嘲笑你，你会？",
     options: [
-      { text: "警惕——他想干什么？", scores: { DEMON: 2, YAND: 2 } },
-      { text: "窃喜，但表面装作淡定", scores: { TSUN: 4 } },
-      { text: "直接问：你为什么对我好？", scores: { HERO: 3, SAGE: 1 } },
-      { text: "感动，开始思考这是不是 flag", scores: { OTAKU: 3, YAND: 1 } },
+      { text: "脸红到脖子，说一句「你够了」然后逃走", scores: { TSUN: 4 } },
+      { text: "微笑着记住这个人的名字。他会后悔的", scores: { DIO: 3, YAND: 1 } },
+      { text: "当场还击，骂得他说不出话", scores: { HERO: 3, DIO: 1 } },
+      { text: "戴上耳机，打开手机，进入二次元结界", scores: { OTAKU: 3, SAGE: 1 } },
     ],
   },
+  // ── Q12: 爱情 ──
   {
-    text: "你觉得你在动漫里大概是什么定位？",
+    text: "你的爱情观最接近哪一个？",
     options: [
-      { text: "嘴硬的主角挚友，关键时刻挺身而出", scores: { TSUN: 3, HERO: 1 } },
-      { text: "主角，开挂的那种", scores: { HERO: 3, DEMON: 1 } },
-      { text: "幕后大 boss，从一开始就在下棋", scores: { DEMON: 3, SAGE: 1 } },
-      { text: "不重要的配角，但有一幕高光让全网哭了", scores: { OTAKU: 2, YAND: 2 } },
+      { text: "喜欢你但死也不说，等你先开口", scores: { TSUN: 4 } },
+      { text: "爱就是占有。没有例外", scores: { YAND: 4 } },
+      { text: "感情是弱点，我不需要", scores: { DIO: 3, SAGE: 1 } },
+      { text: "我的爱人是纸片人，谢谢", scores: { OTAKU: 4 } },
     ],
   },
+  // ── Q13: 最终boss ──
   {
-    text: "你理想中的结局是？",
+    text: "站在最终boss面前，你说什么？",
     options: [
-      { text: "和最重要的人在一起，平凡但幸福", scores: { TSUN: 2, YAND: 2 } },
-      { text: "完成使命，哪怕一个人", scores: { HERO: 2, DEMON: 2 } },
-      { text: "在书海 / 二次元里永远不出来", scores: { OTAKU: 4 } },
-      { text: "留下能被后人记住的东西", scores: { SAGE: 3, DEMON: 1 } },
+      { text: "你做的一切到此为止了！", scores: { HERO: 4 } },
+      { text: "有趣，能打到这里的人很久没出现了", scores: { DIO: 4 } },
+      { text: "我已经算出你第37步的走法了", scores: { SAGE: 3, DIO: 1 } },
+      { text: "呃……能不能商量一下，我还没追完这季番", scores: { OTAKU: 3, TSUN: 1 } },
     ],
   },
+  // ── Q14: 梦想 ──
   {
-    text: "你最受不了哪种人？",
+    text: "你最真实的梦想是什么？",
     options: [
-      { text: "优柔寡断，永远做不了决定的人", scores: { HERO: 2, DEMON: 2 } },
-      { text: "没有边界感，什么都往外说的人", scores: { YAND: 2, DEMON: 2 } },
-      { text: "不看动漫的普通人（直视）", scores: { OTAKU: 4 } },
-      { text: "道貌岸然，表里不一的人", scores: { TSUN: 1, HERO: 1, SAGE: 2 } },
+      { text: "被所有人记住，哪怕是作为恐惧的代名词", scores: { DIO: 4 } },
+      { text: "和那个人永远在一起，只有我们两个就够了", scores: { YAND: 3, TSUN: 1 } },
+      { text: "成为最强，保护所有在乎的人", scores: { HERO: 3, TSUN: 1 } },
+      { text: "理解这个世界的真相", scores: { SAGE: 4 } },
     ],
   },
+  // ── Q15: 灵魂拷问 ──
   {
-    text: "最后一题：你觉得自己最像哪句话？",
+    text: "最后：你觉得自己骨子里最像谁？",
     options: [
-      { text: "「别误会，我只是路过。」（但其实很在乎）", scores: { TSUN: 4 } },
-      { text: "「只有我才能守护你。」", scores: { YAND: 4 } },
-      { text: "「谁也别想拦我。」", scores: { HERO: 3, DEMON: 1 } },
-      { text: "「有趣。」（然后沉默）", scores: { DEMON: 2, SAGE: 2 } },
+      { text: "路飞 / �的接班人——永远热血，永远冲", scores: { HERO: 4 } },
+      { text: "DIO——这个世界终将是我的", scores: { DIO: 4 } },
+      { text: "我推的角色——三次元不配拥有我", scores: { OTAKU: 3, YAND: 1 } },
+      { text: "L / 奇拉——坐在暗处操控一切", scores: { SAGE: 3, DIO: 1 } },
     ],
   },
 ];
