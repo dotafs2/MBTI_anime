@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ANITI · Debug Panel</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #080812;
+      color: #e8e6f0;
+      font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+    }
+    h1 { font-size: 1.4rem; color: #c084fc; margin-bottom: 0.25rem; }
+    .sub { color: #8a86a8; font-size: 0.82rem; margin-bottom: 2rem; }
+    h2 { font-size: 1rem; color: #a78bfa; margin: 1.5rem 0 0.75rem; border-bottom: 1px solid rgba(160,120,255,0.15); padding-bottom: 0.4rem; }
+
+    /* ── Score bars ── */
+    .prob-wrap { max-width: 640px; }
+    .prob-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.45rem; }
+    .prob-label { width: 120px; font-size: 0.78rem; text-align: right; flex-shrink: 0; }
+    .prob-bg { flex: 1; height: 18px; background: #1a1a2e; border-radius: 4px; overflow: hidden; }
+    .prob-fill { height: 100%; border-radius: 4px; }
+    .prob-info { width: 90px; font-size: 0.73rem; color: #8a86a8; flex-shrink: 0; }
+
+    /* ── Cards ── */
+    .char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 0.5rem; }
+    .card {
+      background: #10101e;
+      border: 1px solid rgba(160,120,255,0.15);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-top { height: 3px; }
+    .card-body { padding: 1rem; }
+    .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; }
+    .card-img { width: 64px; height: 64px; object-fit: contain; border-radius: 8px; background: #1a1a2e; float: right; margin: 0 0 0.5rem 0.75rem; }
+    .char-name { font-size: 1rem; font-weight: 700; }
+    .char-series { font-size: 0.72rem; color: #8a86a8; margin-top: 0.15rem; }
+    .rarity-badge { font-size: 0.62rem; font-weight: 700; padding: 2px 7px; border-radius: 99px; color: #000; flex-shrink: 0; }
+    .tagline { font-size: 0.72rem; color: #a78bfa; margin-bottom: 0.6rem; font-style: italic; line-height: 1.4; clear: both; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.3rem; margin-bottom: 0.6rem; }
+    .stat { font-size: 0.68rem; }
+    .stat-label { color: #8a86a8; margin-bottom: 2px; }
+    .dots { display: flex; gap: 2px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #2a2a3e; }
+    .dot.on { }
+    .tags-row { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 0.6rem; }
+    .tag { font-size: 0.62rem; padding: 1px 6px; border: 1px solid rgba(160,120,255,0.2); border-radius: 99px; color: #a78bfa; background: rgba(160,120,255,0.07); }
+    .score-line { font-size: 0.75rem; color: #8a86a8; margin-bottom: 0.6rem; }
+    .score-line strong { }
+    .desc-preview { font-size: 0.72rem; color: #8a86a8; line-height: 1.5; margin-bottom: 0.75rem;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .preview-btn {
+      width: 100%; padding: 0.55rem; border: none; border-radius: 8px;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; color: #fff;
+      transition: opacity 0.2s;
+    }
+    .preview-btn:hover { opacity: 0.82; }
+  </style>
+</head>
+<body>
+  <h1>🛠 ANITI Debug Panel</h1>
+  <p class="sub">点击「预览结果页」设置 localStorage 并跳转到对应结果页 · 概率基于各角色最高可得分占总分比例</p>
+
+  <h2>得分上限分布 / Max Score Distribution</h2>
+  <div class="prob-wrap" id="prob-wrap"></div>
+
+  <h2>所有角色 / All Characters ({{ count }})</h2>
+  <div class="char-grid" id="char-grid"></div>
+
+  <script>
+  const TYPES = {
+    SABER: {
+      code:"SABER", name:"Saber", series:"Fate/stay night",
+      tagline:"「我将此剑握至生命终结——这便是我与世界立下的契约。」",
+      color:"#3b82f6", emoji:"⚔️", image:"images/saber.png",
+      rarity:"8.4%", rarityLabel:"rare",
+      stats:{ danger:4, love:2, chuuni:4, survival:4, dark:5, iq:3 },
+      soulQuote:"你把自己打造成了一把剑——冷硬、无私、永不弯折。",
+      desc:"你是从石中拔出王者之剑的那个人。为了被接受为王，你隐藏了自己的身份，压抑了所有情感——因为你认为王不该有弱点。你的骑士们最终背叛了你，你在卡姆兰战场孤独死去，身边无一人。即便如此，你求的圣杯愿望不是复仇，不是重生，而是「重新选择一个更合适的王」——因为你从未认为自己配得上那把剑。",
+      tags:["孤独的王","自我否定","契约与誓言","压抑情感","Alter线已解锁"],
+    },
+    DIO: {
+      code:"DIO", name:"DIO", series:"JoJo's Bizarre Adventure",
+      tagline:"「このDIOだ！」",
+      color:"#f59e0b", emoji:"👑", image:"images/dio.png",
+      rarity:"2.8%", rarityLabel:"legendary",
+      stats:{ danger:5, love:0, chuuni:5, survival:1, dark:5, iq:4 },
+      soulQuote:"别人在思考要不要行动的时候，你已经在时间停止的世界里走完了全程。",
+      desc:"你是绝对的。没有妥协，没有软弱，没有所谓的道德枷锁。你的字典里只有「胜利」和「还没轮到你」。你不需要别人的认可，因为认可本来就是弱者向强者表达的敬畏。这个世界，终将是你的。",
+      tags:["灭世","支配","绝对","无情","王者"],
+    },
+    FEIYANYANG: {
+      code:"FEIYANYANG", name:"沸羊羊", series:"喜羊羊与灰太狼",
+      tagline:"「为了美羊羊，我可以做任何事！」",
+      color:"#f97316", emoji:"🐏", image:"images/feiyanyang.png",
+      rarity:"23.1%", rarityLabel:"uncommon",
+      stats:{ danger:2, love:5, chuuni:2, survival:3, dark:3, iq:1 },
+      soulQuote:"你的一切行动都有一个终极动机——那个人。旁人叫它冲动，你叫它爱。",
+      desc:"你是彻头彻尾的恋爱脑。力气有，冲劲有，脑子……恋爱的时候暂时不在线。你可以为了在意的人做任何事，包括以一敌百、放弃尊严、和强大的敌人正面硬刚。别人觉得你傻，但你清楚地知道：为了那个人，傻一点又怎样。",
+      tags:["恋爱脑","热血","冲动","为爱痴狂","傻乎乎但真诚"],
+    },
+    MAKOTO: {
+      code:"MAKOTO", name:"伊藤诚", series:"School Days",
+      tagline:"「我只是……还没想清楚而已。」",
+      color:"#6b7280", emoji:"🚢", image:"images/makoto.png",
+      rarity:"31.2%", rarityLabel:"common",
+      stats:{ danger:1, love:4, chuuni:0, survival:0, dark:1, iq:1 },
+      soulQuote:"你不是坏人——你只是从来没学会说「不」。",
+      desc:"你被感情驱动，但你的感情像水一样——流向哪里取决于地势，而不是你的意志。你不会主动伤害任何人，但你的优柔寡断本身就是最深的伤害。你喜欢被喜欢的感觉，胜过真正喜欢某一个人。有一艘船在等你，你还不知道。",
+      tags:["优柔寡断","渣男天赋","死亡flag满载","Nice Boat","不是坏人但结果一样"],
+    },
+    EREN: {
+      code:"EREN", name:"艾伦·耶格尔", series:"进击的巨人",
+      tagline:"「我一直都是这样——向前冲，不管结果如何。」",
+      color:"#16a34a", emoji:"🗡️", image:"images/eren.png",
+      rarity:"5.3%", rarityLabel:"rare",
+      stats:{ danger:5, love:3, chuuni:4, survival:1, dark:5, iq:2 },
+      soulQuote:"你渴望的不是胜利，不是复仇——是自由。但你从没想清楚：自由的尽头，是什么。",
+      desc:"你从小就知道自己想要什么——打破那堵墙，去看墙外的世界。这份执念驱动着你前进，也一点一点把你变成了别的什么。你爱过那些人，你也亲手毁掉了他们的世界。地鸣启动的那一刻，你比任何人都清楚——再也回不去了。",
+      tags:["自由意志","执念","地鸣","从英雄到屠夫","我一直都是这样"],
+    },
+    L: {
+      code:"L", name:"L·劳烈特", series:"死亡笔记",
+      tagline:"「我，就是L。」",
+      color:"#e2e8f0", emoji:"🍰", image:"images/l.png",
+      rarity:"4.1%", rarityLabel:"rare",
+      stats:{ danger:4, love:0, chuuni:3, survival:3, dark:3, iq:5 },
+      soulQuote:"你的大脑永远比别人快三步——问题是，你从不让任何人知道你在想什么。",
+      desc:"你蹲在椅子上，抱着膝盖，手里捏着第十四块蛋糕，眼睛盯着某个没人看得懂的地方。你不是在发呆——你在以别人无法理解的速度处理信息。你说话奇怪，行为更奇怪，但你说出来的每一句话都是致命一击。",
+      tags:["天才侦探","甜食依赖","不按常理","五的概率","始终在场"],
+    },
+    MOMO: {
+      code:"MOMO", name:"光月御门之助", series:"海贼王",
+      tagline:"「我才不害怕！我是光月御门之助！」",
+      color:"#8b5cf6", emoji:"🐉", image:"images/momo.png",
+      rarity:"18.3%", rarityLabel:"uncommon",
+      stats:{ danger:2, love:3, chuuni:4, survival:3, dark:3, iq:2 },
+      soulQuote:"你嘴上说「我才不怕」，但手在发抖。没关系——真正的勇气从来不是没有恐惧，而是颤抖着也要往前。",
+      desc:"你是家门里最后的血脉，背负着所有人的牺牲长大。你哭过，逃过，也在众人面前假装很厉害——但你一直没有放弃。别人眼里你是「废物少主」，但有一天，你站在了整个国家的顶点，成为了将军。不是因为你天生强大，而是因为你从没有真正放弃过。",
+      tags:["废物少主","我才不害怕","眼泪是真的","龙","将军大人"],
+    },
+    RENGOKU: {
+      code:"RENGOKU", name:"煉獄杏寿郎", series:"鬼灭之刃",
+      tagline:"「心を燃やせ！燃烧吧，心脏！」",
+      color:"#ef4444", emoji:"🔥", image:"images/rengoku.png",
+      rarity:"9.2%", rarityLabel:"rare",
+      stats:{ danger:4, love:3, chuuni:3, survival:2, dark:1, iq:3 },
+      soulQuote:"你不是不知道前方有多危险——你只是觉得，如果不是你站在那里，就没有人会站在那里。",
+      desc:"你天生就是要燃烧的那种人。不是为了被看见，不是为了留名，而是因为你骨子里有一团火，它要求你必须向前。你保护你的同伴，不是因为你必须，而是因为你根本没办法袖手旁观。有些事情，就是要有人去做的。那个人，就是你。心を燃やせ。",
+      tags:["炎柱","燃烧的心","守护者","UMAI!","不退一步"],
+    },
+    LIONHEART: {
+      code:"LIONHEART", name:"狮心王", series:"噬魂师 / Soul Eater",
+      tagline:"「FOOL！恒久遥远——Excalibur！！」",
+      color:"#f59e0b", emoji:"⚡", image:"images/lionheart.png",
+      rarity:"0.9%", rarityLabel:"legendary",
+      stats:{ danger:3, love:0, chuuni:5, survival:1, dark:2, iq:2 },
+      soulQuote:"你把手边每一样东西都命名为「Excalibur」。别人觉得你疯了。但你清楚地知道：传说不需要解释。",
+      desc:"你天生就是传说。你的剑叫 Excalibur，你的刀叫 Excalibur，你的笔记本、你的外套、你桌上那杯水——全都叫 Excalibur。你不解释，因为真正的骑士从不为自己辩解。骑士，不徒手而亡。恒久遥远 ——Ex—calibur！！胜利之剑！！",
+      tags:["FOOL!","传说之剑","骑士不徒手而亡","中二拉满","无人能理解我"],
+    },
+  };
+
+  // Compact scores for all 20 questions (same values as index.html)
+  const QUESTION_SCORES = [
+    [ // Q1
+      { SABER:2, FEIYANYANG:4, EREN:2, L:0, DIO:0, MAKOTO:0, LIONHEART:2, RENGOKU:4, MOMO:1 },
+      { L:4, SABER:1, DIO:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:1, RENGOKU:1, MOMO:0 },
+      { SABER:3, EREN:2, L:2, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:2, RENGOKU:2, MOMO:2 },
+      { MAKOTO:4, DIO:1, L:1, SABER:0, FEIYANYANG:0, EREN:0, LIONHEART:0, RENGOKU:0, MOMO:3 },
+    ],
+    [ // Q2
+      { SABER:4, EREN:2, L:1, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:1, RENGOKU:4, MOMO:2 },
+      { L:4, DIO:2, SABER:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:2, RENGOKU:0, MOMO:0 },
+      { FEIYANYANG:4, MAKOTO:2, SABER:0, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:1, MOMO:1 },
+      { MAKOTO:4, DIO:1, L:1, SABER:0, FEIYANYANG:0, EREN:0, LIONHEART:4, RENGOKU:0, MOMO:4 },
+    ],
+    [ // Q3
+      { SABER:3, EREN:2, L:1, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:1, RENGOKU:3, MOMO:1 },
+      { MAKOTO:4, FEIYANYANG:1, SABER:0, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:0, MOMO:3 },
+      { EREN:3, FEIYANYANG:3, SABER:1, DIO:0, MAKOTO:0, L:0, LIONHEART:2, RENGOKU:2, MOMO:0 },
+      { DIO:4, MAKOTO:2, SABER:0, FEIYANYANG:0, EREN:0, L:0, LIONHEART:3, RENGOKU:0, MOMO:2 },
+    ],
+    [ // Q4
+      { MAKOTO:3, FEIYANYANG:2, SABER:1, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:1, MOMO:4 },
+      { EREN:4, SABER:2, FEIYANYANG:1, DIO:0, MAKOTO:0, L:0, LIONHEART:2, RENGOKU:3, MOMO:1 },
+      { L:4, SABER:3, EREN:1, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:1, RENGOKU:3, MOMO:2 },
+      { DIO:4, L:2, MAKOTO:1, SABER:0, FEIYANYANG:0, EREN:0, LIONHEART:4, RENGOKU:0, MOMO:0 },
+    ],
+    [ // Q5
+      { SABER:4, L:2, EREN:1, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:0, RENGOKU:4, MOMO:2 },
+      { L:4, DIO:2, SABER:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:2, RENGOKU:1, MOMO:0 },
+      { DIO:4, EREN:3, L:0, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:4, RENGOKU:0, MOMO:1 },
+      { MAKOTO:4, FEIYANYANG:1, DIO:1, SABER:0, EREN:0, L:0, LIONHEART:0, RENGOKU:0, MOMO:4 },
+    ],
+    [ // Q6
+      { SABER:3, FEIYANYANG:2, MAKOTO:2, DIO:0, EREN:0, L:0, LIONHEART:1, RENGOKU:3, MOMO:3 },
+      { L:4, SABER:2, EREN:1, DIO:1, FEIYANYANG:0, MAKOTO:0, LIONHEART:1, RENGOKU:2, MOMO:0 },
+      { FEIYANYANG:4, MAKOTO:3, SABER:0, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:1, MOMO:2 },
+      { DIO:4, EREN:3, L:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:4, RENGOKU:0, MOMO:0 },
+    ],
+    [ // Q7
+      { SABER:3, MAKOTO:3, FEIYANYANG:1, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:2, MOMO:2 },
+      { EREN:4, DIO:2, L:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:3, RENGOKU:4, MOMO:3 },
+      { MAKOTO:4, DIO:2, L:1, SABER:0, FEIYANYANG:0, EREN:0, LIONHEART:4, RENGOKU:0, MOMO:0 },
+      { L:4, SABER:1, DIO:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:1, RENGOKU:1, MOMO:1 },
+    ],
+    [ // Q8
+      { SABER:4, EREN:2, FEIYANYANG:1, DIO:0, MAKOTO:0, L:0, LIONHEART:1, RENGOKU:4, MOMO:1 },
+      { L:4, DIO:2, SABER:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:2, RENGOKU:2, MOMO:0 },
+      { FEIYANYANG:4, MAKOTO:3, SABER:1, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:1, MOMO:3 },
+      { MAKOTO:4, DIO:1, L:1, SABER:0, FEIYANYANG:0, EREN:0, LIONHEART:3, RENGOKU:0, MOMO:2 },
+    ],
+    [ // Q9
+      { SABER:4, EREN:3, FEIYANYANG:1, DIO:0, MAKOTO:0, L:0, LIONHEART:3, RENGOKU:4, MOMO:2 },
+      { DIO:3, L:3, SABER:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:1, RENGOKU:1, MOMO:1 },
+      { L:4, SABER:2, EREN:1, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:1, RENGOKU:2, MOMO:0 },
+      { MAKOTO:4, FEIYANYANG:1, SABER:0, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:0, MOMO:4 },
+    ],
+    [ // Q10
+      { SABER:3, DIO:2, EREN:2, FEIYANYANG:0, MAKOTO:0, L:0, LIONHEART:2, RENGOKU:2, MOMO:1 },
+      { DIO:4, L:2, EREN:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:4, RENGOKU:0, MOMO:0 },
+      { FEIYANYANG:4, EREN:3, SABER:1, DIO:0, MAKOTO:0, L:0, LIONHEART:1, RENGOKU:3, MOMO:3 },
+      { MAKOTO:4, L:1, DIO:1, SABER:0, FEIYANYANG:0, EREN:0, LIONHEART:0, RENGOKU:0, MOMO:2 },
+    ],
+    [ // Q11
+      { SABER:4, EREN:2, DIO:1, FEIYANYANG:0, MAKOTO:0, L:0, LIONHEART:3, RENGOKU:4, MOMO:1 },
+      { L:4, DIO:2, SABER:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:2, RENGOKU:2, MOMO:0 },
+      { FEIYANYANG:4, MAKOTO:3, SABER:1, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:2, MOMO:3 },
+      { MAKOTO:4, FEIYANYANG:1, DIO:1, SABER:0, EREN:0, L:0, LIONHEART:0, RENGOKU:0, MOMO:3 },
+    ],
+    [ // Q12
+      { SABER:4, EREN:2, FEIYANYANG:1, DIO:0, MAKOTO:0, L:0, LIONHEART:1, RENGOKU:4, MOMO:2 },
+      { DIO:4, L:2, EREN:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:4, RENGOKU:0, MOMO:0 },
+      { FEIYANYANG:4, MAKOTO:3, SABER:0, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:1, MOMO:3 },
+      { L:4, DIO:2, SABER:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:2, RENGOKU:1, MOMO:1 },
+    ],
+    [ // Q13
+      { SABER:4, EREN:2, L:1, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:2, RENGOKU:3, MOMO:2 },
+      { L:4, DIO:2, SABER:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:1, RENGOKU:2, MOMO:0 },
+      { MAKOTO:4, FEIYANYANG:1, SABER:0, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:0, MOMO:3 },
+      { DIO:4, EREN:2, L:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:4, RENGOKU:2, MOMO:1 },
+    ],
+    [ // Q14
+      { MAKOTO:4, DIO:1, L:0, SABER:0, FEIYANYANG:0, EREN:0, LIONHEART:1, RENGOKU:0, MOMO:3 },
+      { SABER:4, L:2, EREN:1, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:3, RENGOKU:3, MOMO:1 },
+      { FEIYANYANG:3, MAKOTO:2, SABER:2, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:3, MOMO:2 },
+      { L:4, DIO:2, MAKOTO:1, SABER:0, FEIYANYANG:0, EREN:0, LIONHEART:1, RENGOKU:0, MOMO:0 },
+    ],
+    [ // Q15
+      { SABER:4, EREN:3, L:1, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:2, RENGOKU:4, MOMO:2 },
+      { L:4, SABER:1, EREN:1, DIO:1, FEIYANYANG:0, MAKOTO:0, LIONHEART:1, RENGOKU:2, MOMO:1 },
+      { DIO:4, L:2, EREN:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:4, RENGOKU:0, MOMO:0 },
+      { MAKOTO:4, FEIYANYANG:1, DIO:1, SABER:0, EREN:0, L:0, LIONHEART:0, RENGOKU:0, MOMO:4 },
+    ],
+    [ // Q16
+      { EREN:4, DIO:2, L:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:2, RENGOKU:2, MOMO:2 },
+      { FEIYANYANG:4, MAKOTO:3, SABER:0, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:1, MOMO:2 },
+      { DIO:4, EREN:2, L:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:3, RENGOKU:0, MOMO:0 },
+      { L:4, SABER:2, DIO:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:1, RENGOKU:1, MOMO:1 },
+    ],
+    [ // Q17
+      { FEIYANYANG:4, MAKOTO:3, EREN:1, DIO:0, SABER:0, L:0, LIONHEART:0, RENGOKU:1, MOMO:2 },
+      { SABER:3, FEIYANYANG:2, MAKOTO:2, DIO:0, EREN:0, L:0, LIONHEART:1, RENGOKU:3, MOMO:4 },
+      { EREN:4, DIO:2, L:2, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:4, RENGOKU:3, MOMO:1 },
+      { DIO:4, L:3, EREN:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:3, RENGOKU:0, MOMO:0 },
+    ],
+    [ // Q18
+      { SABER:4, EREN:2, L:1, DIO:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:2, RENGOKU:4, MOMO:2 },
+      { DIO:4, MAKOTO:2, L:1, SABER:0, FEIYANYANG:0, EREN:0, LIONHEART:3, RENGOKU:0, MOMO:1 },
+      { FEIYANYANG:4, MAKOTO:3, SABER:0, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:1, MOMO:4 },
+      { MAKOTO:4, FEIYANYANG:1, DIO:1, SABER:0, EREN:0, L:0, LIONHEART:0, RENGOKU:0, MOMO:2 },
+    ],
+    [ // Q19
+      { SABER:4, FEIYANYANG:2, EREN:1, DIO:0, MAKOTO:0, L:0, LIONHEART:1, RENGOKU:4, MOMO:3 },
+      { DIO:4, EREN:2, L:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:4, RENGOKU:0, MOMO:0 },
+      { FEIYANYANG:4, MAKOTO:3, SABER:1, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:2, MOMO:2 },
+      { L:4, SABER:2, DIO:1, FEIYANYANG:0, EREN:0, MAKOTO:0, LIONHEART:1, RENGOKU:1, MOMO:1 },
+    ],
+    [ // Q20
+      { SABER:4, EREN:2, DIO:1, FEIYANYANG:0, MAKOTO:0, L:0, LIONHEART:3, RENGOKU:3, MOMO:2 },
+      { DIO:3, L:3, EREN:1, SABER:0, FEIYANYANG:0, MAKOTO:0, LIONHEART:2, RENGOKU:1, MOMO:0 },
+      { FEIYANYANG:4, MAKOTO:3, SABER:0, DIO:0, EREN:0, L:0, LIONHEART:0, RENGOKU:0, MOMO:4 },
+      { MAKOTO:4, FEIYANYANG:1, L:1, SABER:0, DIO:0, EREN:0, LIONHEART:0, RENGOKU:0, MOMO:3 },
+    ],
+  ];
+
+  const RARITY_COLORS = { legendary:'#efbf04', rare:'#c084fc', uncommon:'#38bdf8', common:'#6b7280' };
+  const STAT_LABELS = { danger:'危险', love:'恋爱脑', chuuni:'中二', survival:'队友存活率', dark:'黑化概率', iq:'智力' };
+
+  // ── Calc max possible score per character ──
+  function calcMaxScores() {
+    const chars = Object.keys(TYPES);
+    const max = {};
+    chars.forEach(k => max[k] = 0);
+    QUESTION_SCORES.forEach(opts => {
+      chars.forEach(k => {
+        const best = Math.max(...opts.map(s => s[k] || 0));
+        max[k] += best;
+      });
+    });
+    return max;
+  }
+
+  // ── Render prob bars ──
+  function renderBars(maxScores) {
+    const total = Object.values(maxScores).reduce((a,b) => a+b, 0);
+    const maxVal = Math.max(...Object.values(maxScores));
+    const sorted = Object.entries(maxScores).sort((a,b) => b[1]-a[1]);
+    const wrap = document.getElementById('prob-wrap');
+    sorted.forEach(([key, score]) => {
+      const t = TYPES[key];
+      const pct = ((score / total) * 100).toFixed(1);
+      const barW = Math.round((score / maxVal) * 100);
+      const row = document.createElement('div');
+      row.className = 'prob-row';
+      row.innerHTML = `
+        <div class="prob-label" style="color:${t.color}">${t.emoji} ${t.name}</div>
+        <div class="prob-bg"><div class="prob-fill" style="width:${barW}%;background:${t.color}"></div></div>
+        <div class="prob-info">max ${score}pt &nbsp;${pct}%</div>
+      `;
+      wrap.appendChild(row);
+    });
+  }
+
+  // ── Render cards ──
+  function renderCards(maxScores) {
+    const grid = document.getElementById('char-grid');
+    document.querySelector('h2:last-of-type').textContent =
+      `所有角色 / All Characters (${Object.keys(TYPES).length})`;
+
+    Object.entries(TYPES).forEach(([key, t]) => {
+      const dotsHtml = (val, color) =>
+        Array.from({length:5}, (_,i) =>
+          `<div class="dot${i<val?' on':''}" style="${i<val?'background:'+color:''}"></div>`
+        ).join('');
+
+      const statsHtml = Object.keys(STAT_LABELS).map(s =>
+        `<div class="stat">
+          <div class="stat-label">${STAT_LABELS[s]}</div>
+          <div class="dots">${dotsHtml(t.stats[s], t.color)}</div>
+        </div>`
+      ).join('');
+
+      const tagsHtml = t.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+      const rc = RARITY_COLORS[t.rarityLabel] || '#6b7280';
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-top" style="background:${t.color}"></div>
+        <div class="card-body">
+          <img class="card-img" src="${t.image}" onerror="this.style.display='none'">
+          <div class="card-head">
+            <div>
+              <div class="char-name" style="color:${t.color}">${t.emoji} ${t.name}</div>
+              <div class="char-series">${t.series}</div>
+            </div>
+            <span class="rarity-badge" style="background:${rc}">${t.rarityLabel.toUpperCase()}</span>
+          </div>
+          <div class="tagline">${t.tagline}</div>
+          <div class="stats-row">${statsHtml}</div>
+          <div class="tags-row">${tagsHtml}</div>
+          <div class="score-line">最高可得分: <strong style="color:${t.color}">${maxScores[key]} pts</strong> · 稀有度: ${t.rarity}</div>
+          <div class="desc-preview">${t.desc}</div>
+          <button class="preview-btn" style="background:${t.color}" onclick="previewResult('${key}')">
+            预览结果页 →
+          </button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function previewResult(key) {
+    localStorage.setItem('aniti_result', key);
+    window.open('index.html', '_blank');
+  }
+
+  // ── Init ──
+  const maxScores = calcMaxScores();
+  renderBars(maxScores);
+  renderCards(maxScores);
+  </script>
+</body>
+</html>

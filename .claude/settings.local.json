@@ -13,7 +13,28 @@
       "Bash(python3 -c \":*)",
       "Bash(python3:*)",
       "Bash(git -C /c/MBTI_anime add -A)",
-      "Bash(git -C /c/MBTI_anime commit -m \"feat: overhaul to character-based system \\(Saber/DIO/沸羊羊\\), rewrite all questions\")"
+      "Bash(git -C /c/MBTI_anime commit -m \"feat: overhaul to character-based system \\(Saber/DIO/沸羊羊\\), rewrite all questions\")",
+      "Bash(git -C /c/MBTI_anime add index.html)",
+      "Bash(git -C /c/MBTI_anime commit -m \"feat: replace single danger bar with 5 stat indicators \\(危险/恋爱脑/中二/队友存活率/黑化概率\\)\")",
+      "Bash(git -C /c/MBTI_anime commit -m \"fix: rewrite Saber desc/tagline/stats based on Fate canon\")",
+      "Bash(git -C /c/MBTI_anime commit -m \"feat: persist result to localStorage, restore on refresh\")",
+      "Bash(git -C /c/MBTI_anime commit -m \"feat: share generates image with QR code overlay \\(html2canvas + qrcode.js\\)\")",
+      "Bash(git -C /c/MBTI_anime add images/feiyanyang.png)",
+      "Bash(git -C /c/MBTI_anime commit -m \"asset: add 沸羊羊 illustration\")",
+      "Bash(git -C /c/MBTI_anime commit -m \"fix: replace QRCode.js with qrserver.com API, fix share generation\")",
+      "Bash(git -C /c/MBTI_anime commit -m \"fix: rewrite landing title copy to feel natural\")",
+      "Bash(git -C /c/MBTI_anime commit -m \"feat: add 伊藤诚 \\(School Days\\) as 4th character type\")",
+      "Bash(git -C /c/MBTI_anime commit -m \"feat: rewrite share as pure Canvas render, remove html2canvas dependency\")",
+      "Bash(git -C /c/MBTI_anime add images/makoto.png)",
+      "Bash(git -C /c/MBTI_anime commit -m \"asset: add 伊藤诚 illustration\")",
+      "Bash(git -C /c/MBTI_anime add images/eren.png index.html)",
+      "Bash(git -C /c/MBTI_anime commit -m \"feat: add 艾伦·耶格尔 \\(AoT\\) character + illustration\")",
+      "Bash(git -C /c/MBTI_anime status)",
+      "Bash(git -C /c/MBTI_anime add images/saber.png)",
+      "Bash(git -C /c/MBTI_anime commit -m \"asset: update Saber illustration\")",
+      "Bash(git -C /c/MBTI_anime add index.html images/l.png)",
+      "Bash(git -C /c/MBTI_anime commit -m \"feat: add L \\(Death Note\\) + 智力指数 stat to all characters\")",
+      "Bash(git -C /c/MBTI_anime commit -m \"fix: guard showResult against invalid type key, clear stale localStorage, 20 questions\")"
     ]
   }
 }
