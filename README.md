@@ -69,5 +69,6 @@ MBTI_anime/
 
 ## Credits & License
 
-- **SBTI 原作者**：[B站@蛆肉儿串儿](https://space.bilibili.com/417038183) · [sbti.unun.dev](https://sbti.unun.dev/)
-- **ANITI** 为基于 SBTI 概念的动漫向二次创作，仅供个人非商业使用。
+- **灵感来源**：[SBTI](https://sbti.unun.dev/) by [B站@蛆肉儿串儿](https://space.bilibili.com/417038183)
+- **ANITI** 受 SBTI 启发独立开发，未使用任何原作代码。全部代码由 [Claude](https://claude.ai) 生成，概念设计与内容由作者原创。
+- 开源协议：MIT License
