@@ -547,8 +547,41 @@ body {
   .option-btn { min-height: 52px; padding: 0.9em 1.2em; }
   .btn-primary { min-height: 52px; }
 }
+
+/* ========== ADMIN PANEL ========== */
+.admin-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(8,8,18,0.88);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  animation: adminFadeIn 0.2s ease;
+}
+@keyframes adminFadeIn { from { opacity:0 } to { opacity:1 } }
+.admin-panel {
+  background: var(--card);
+  border: 1px solid rgba(192,132,252,0.35);
+  border-radius: var(--radius);
+  width: min(88vw, 360px);
+  padding: 1.8rem;
+  box-shadow: 0 0 40px rgba(192,132,252,0.15);
+  text-align: center;
+}
+.admin-title { font-size: 1rem; font-weight: 700; color: var(--accent); letter-spacing: 0.05em; margin-bottom: 1.2rem; }
+.admin-stat-row {
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+.admin-stat {
+  background: var(--card2); border-radius: var(--radius-sm);
+  padding: 0.8rem; text-align: center;
+  border: 1px solid var(--border);
+}
+.admin-stat-num { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+.admin-stat-label { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+.admin-hint { font-size: 0.7rem; color: var(--muted); margin-top: 1rem; opacity: 0.6; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </head>
 <body>
 
@@ -1250,6 +1283,52 @@ function showToast() {
     localStorage.removeItem("aniti_result");
   }
 })();
+  </script>
+
+  <!-- ========== ADMIN PANEL（不蒜子） ========== -->
+  <div id="admin-overlay" class="admin-overlay" style="display:none">
+    <div class="admin-panel">
+      <div class="admin-title">⚡ 站点数据</div>
+      <div class="admin-stat-row">
+        <div class="admin-stat">
+          <div class="admin-stat-num" id="busuanzi_value_site_pv">-</div>
+          <div class="admin-stat-label">总浏览次数</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-num" id="busuanzi_value_site_uv">-</div>
+          <div class="admin-stat-label">独立访客</div>
+        </div>
+      </div>
+      <p class="admin-hint">Ctrl + Shift + M 关闭 · 点击外部关闭</p>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var overlay = document.getElementById('admin-overlay');
+
+    /* 桌面端：Ctrl+Shift+M */
+    document.addEventListener('keydown', function (e) {
+      if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+        e.preventDefault();
+        overlay.style.display = overlay.style.display === 'none' ? 'flex' : 'none';
+      }
+      if (e.key === 'Escape') overlay.style.display = 'none';
+    });
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.style.display = 'none'; });
+
+    /* 移动端：连点标题 5 次 */
+    var tapCount = 0, tapTimer;
+    var titleEl = document.querySelector('.landing-title') || document.querySelector('h1');
+    if (titleEl) {
+      titleEl.addEventListener('click', function () {
+        tapCount++;
+        clearTimeout(tapTimer);
+        if (tapCount >= 5) { tapCount = 0; overlay.style.display = 'flex'; }
+        else tapTimer = setTimeout(function () { tapCount = 0; }, 2000);
+      });
+    }
+  })();
   </script>
 </body>
 </html>

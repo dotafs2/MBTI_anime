@@ -9,3 +9,9 @@ Inspired by [SBTI](https://sbti.unun.dev/) (by [B站@蛆肉儿串儿](https://sp
 纯属娱乐，所有文本、图片、个人信息、百分比、各种性格和文字全都是 Claude 自动生成的，dotafs 没有写任何一行代码。除了狮心王——真的很喜欢狮心王，所以文字是我从抖音上抄下来的。
 
 MIT License
+
+---
+
+## 站点数据
+
+按 **Ctrl + Shift + M** 查看（移动端连点标题 5 次），可查看总浏览次数和独立访客数。
