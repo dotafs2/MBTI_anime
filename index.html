@@ -653,7 +653,7 @@ body {
 const TYPES = {
   SABER: {
     code: "SABER",
-    name: "Saber",
+    name: "SAB-er",
     series: "Fate/stay night",
     tagline: "「我将此剑握至生命终结——这便是我与世界立下的契约。」",
     color: "#3b82f6",
@@ -667,7 +667,7 @@ const TYPES = {
   },
   DIO: {
     code: "DIO",
-    name: "DIO",
+    name: "DI-O",
     series: "JoJo's Bizarre Adventure",
     tagline: "「このDIOだ！」",
     color: "#f59e0b",
@@ -681,7 +681,7 @@ const TYPES = {
   },
   FEIYANYANG: {
     code: "FEIYANYANG",
-    name: "沸羊羊",
+    name: "🐏",
     series: "喜羊羊与灰太狼",
     tagline: "「为了美羊羊，我可以做任何事！」",
     color: "#f97316",
@@ -695,7 +695,7 @@ const TYPES = {
   },
   MAKOTO: {
     code: "MAKOTO",
-    name: "伊藤诚",
+    name: "BOA-T",
     series: "School Days",
     tagline: "「我只是……还没想清楚而已。」",
     color: "#6b7280",
@@ -709,7 +709,7 @@ const TYPES = {
   },
   EREN: {
     code: "EREN",
-    name: "艾伦·耶格尔",
+    name: "FRE-E",
     series: "进击的巨人",
     tagline: "「我一直都是这样——向前冲，不管结果如何。」",
     color: "#16a34a",
@@ -723,7 +723,7 @@ const TYPES = {
   },
   L: {
     code: "L",
-    name: "L·劳烈特",
+    name: "L",
     series: "死亡笔记",
     tagline: "「我，就是L。」",
     color: "#e2e8f0",
@@ -737,7 +737,7 @@ const TYPES = {
   },
   MOMO: {
     code: "MOMO",
-    name: "光月御门之助",
+    name: "PEE-K",
     series: "海贼王",
     tagline: "「这位女士，在下有礼了……」",
     color: "#8b5cf6",
@@ -751,7 +751,7 @@ const TYPES = {
   },
   RENGOKU: {
     code: "RENGOKU",
-    name: "煉獄杏寿郎",
+    name: "BUR-N",
     series: "鬼灭之刃",
     tagline: "「心を燃やせ！燃烧吧，心脏！」",
     color: "#ef4444",
@@ -765,7 +765,7 @@ const TYPES = {
   },
   LIONHEART: {
     code: "LIONHEART",
-    name: "狮心王",
+    name: "EXC-L",
     series: "噬魂师 / Soul Eater",
     tagline: "骑士不会空手而亡",
     color: "#f59e0b",
@@ -779,7 +779,7 @@ const TYPES = {
   },
   ASUKA: {
     code: "ASUKA",
-    name: "惣流·明日香",
+    name: "BAK-A",
     series: "新世纪福音战士",
     tagline: "「あんたバカ？」",
     color: "#e11d48",
@@ -1102,7 +1102,7 @@ function showResult() {
 
   document.getElementById("result-code").textContent = t.name;
   document.getElementById("result-code").style.color = t.color;
-  document.getElementById("result-name").textContent = t.series;
+  document.getElementById("result-name").textContent = t.code;
   document.getElementById("result-tagline").textContent = t.tagline;
 
   // 计算相似度：基于 z-score 映射到合理百分比
